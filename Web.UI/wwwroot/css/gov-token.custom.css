@@ -1,0 +1,22 @@
+
+.d-none{display: none;}
+
+.v-middle{vertical-align: middle !important;}
+
+.overlay{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5); 
+}
+
+.disabled {
+    cursor: not-allowed !important;
+    background-color: #EEE !important;
+}
+.btn-grid {
+    margin-right: 5px;
+}

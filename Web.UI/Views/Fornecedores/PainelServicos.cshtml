@@ -1,0 +1,110 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li>Início</li>
+        <li>Fornecedor</li>
+        <li>Painel Serviços</li>
+    </ol>
+</div>
+
+<div id="content">
+    <section id="widget-grid" class="">
+
+        <div class="row">
+
+            <article class="col-sm-12 col-md-12 col-lg-10">
+
+                <div class="jarviswidget" id="wid-id-agendamentos" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+
+                    <header>
+                        <div class="jarviswidget-ctrls" role="menu">
+                            <a class="button-icon jarviswidget-toggle-btn cursor-pointer" rel="tooltip" title="Filtrar" data-original-title="Filtrar"
+                               data-toggle="modal" data-target="#myModal">
+                                <i class="fa fa-filter"></i>
+                            </a>
+                        </div>
+
+                        <span class="widget-icon"><i class="fa fa-wrench"></i></span>
+                        <h2>Serviços Disponiveis</h2>
+                    </header>
+
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div style="margin: 15px 0 0 0;" class="row">
+                                @for (var i = 1; i <= 30; i++)
+                                {
+                                <div id="programadas" class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading" style="color: #FFF;">
+                                            <h3 class="panel-title"><i class="fa fa-calendar"></i> @i/10/2022</h3>
+                                        </div>
+                                        <div class="panel-body no-padding text-align-center">
+                                            <div class="the-price">
+                                                <h1>Serviço #@i</h1>
+                                                <small>TIPO SERVIÇO #@i</small>
+                                            </div>
+                                            <p style="padding: 10px 10px 0 10px">DESCRIÇÃO DO SERVIÇO #@i</p>
+                                        </div>
+                                        <div class="panel-footer no-padding">
+                                            <a href="/PropostaServico/Enviar" class="btn btn-primary btn-block" role="button" data-toggle="modal" data-target="#myModal">
+                                                <i class="fa fa-check"></i> Enviar Proposta
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+        </div>
+    </section>
+</div>
+
+
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Enviar Proposta</h4>
+            </div>
+            <form name="form-manutencao" id="form-manutencao">
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col col-xs-12 col-sm-6 col-md-6 col-lg-6 smart-form">
+                            <div class="">
+                                <label class="label">Valor da Proposta:</label>
+                                <label class="input">
+                                    <input type="number" id="Valor">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btn-salvar" class="btn btn-primary">
+                        Enviar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

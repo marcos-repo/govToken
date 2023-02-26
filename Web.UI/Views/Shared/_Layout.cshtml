@@ -1,0 +1,162 @@
+﻿
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title> GovToken - Web </title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/gov-token.plugins.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/gov-token.min.css">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="~/css/gov-token.custom.css">
+
+
+    <!-- GOOGLE FONT -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
+
+    <script src="~/js/libs/jquery-2.1.1.min.js"></script>
+
+</head>
+
+<body class="">
+    <header id="header">
+        <div id="logo-group">
+            <span id="logo"> <img src="~/img/logo.png" alt="GovToken" style="margin-top:-10px !important;"> </span>
+        </div>
+
+        <div class="pull-right">
+
+            <div id="hide-menu" class="btn-header pull-right">
+                <span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
+            </div>
+
+            <div id="logout" class="btn-header transparent pull-right">
+                <span>
+                    <a href="/Acesso/Logout" title="Sair do Sistema" data-action="userLogout"
+                        <i class="fa fa-sign-out"></i>
+                    </a>
+                </span>
+            </div>
+
+        </div>
+
+    </header>
+
+    <aside id="left-panel">
+        <div class="login-info">
+            <span>
+                <a href="#">
+                    <i class="fa fa-lg fa-fw fa-user"></i>
+                    <span>
+                        @*@ViewBag.NomeUsuario*@ Nome Usuário
+                    </span>
+                </a>
+            </span>
+        </div>
+        <nav>
+            <ul style="">
+                <li class="">
+                    <a href="#" title="Conta Lastro"><i class="fa fa-lg fa-fw fa-th"></i> <span class="menu-item-parent">Conta Lastro Governo</span><b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a>
+                    <ul style="display: none;">
+                        <li class="">
+                            <a href="/GovernoFederal/Depositar/" title="Depositar"><span class="menu-item-parent">Depositar</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/GovernoFederal/Extrato/" title="Extrato"><span class="menu-item-parent">Extrato</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-th"></i> <span class="menu-item-parent">Agentes Federados</span><b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a>
+                    <ul style="display: none;">
+                        <li class="">
+                            <a href="/AgentesFederados/Cadastrar" title="Cadastro"><span class="menu-item-parent">Cadastro</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/AgentesFederados/Transferir" title="Transferencia"><span class="menu-item-parent">Transferencia Tokens</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/AgentesFederados/Extrato" title="Extrato"><span class="menu-item-parent">Extrato</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-th"></i> <span class="menu-item-parent">Secretarias</span><b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a>
+                    <ul style="display: none;">
+                        <li class="">
+                            <a href="/Secretarias/Cadastrar" title="Cadastro"><span class="menu-item-parent">Cadastrar</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/Secretarias/Extrato" title="Cadastro"><span class="menu-item-parent">Extrato</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/Secretarias/SolicitarServico" title="Cadastro"><span class="menu-item-parent">Solicitar Serviço</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="">
+                    <a href="#" title="Dashboard"><i class="fa fa-lg fa-fw fa-th"></i> <span class="menu-item-parent">Fornecedores</span><b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a>
+                    <ul style="display: none;">
+                        <li class="">
+                            <a href="/Fornecedores/Cadastrar" title="Cadastro"><span class="menu-item-parent">Cadastro</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/Fornecedores/Extrato" title="Monitoramento"><span class="menu-item-parent">Extrato</span></a>
+                        </li>
+                        <li class="">
+                            <a href="/Fornecedores/PainelServicos" title="Monitoramento"><span class="menu-item-parent">Painel Serviços</span></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <span class="minifyme" data-action="minifyMenu"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+
+    </aside>
+    <div id="main" role="main">
+        @RenderBody()
+    </div>
+    <div class="page-footer">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <span class="txt-color-white">GovToken © 2022</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (!window.jQuery) {
+            document.write('<script src="~/js/libs/jquery-2.1.1.min.js"><\/script>');
+        }
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script>
+        if (!window.jQuery.ui) {
+            document.write('<script src="~/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+        }
+    </script>
+
+    <script src="~/js/app.config.js"></script>
+    <script src="~/js/bootstrap/bootstrap.min.js"></script>
+    <script src="~/js/notification/SmartNotification.min.js"></script>
+    <script src="~/js/app.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            pageSetUp();
+        })
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,143 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li>Início</li>
+        <li>Agentes Federados</li>
+        <li>Cadastrar</li>
+    </ol>
+</div>
+
+<div id="content">
+    <section id="widget-grid" class="">
+
+        <div class="row">
+            <article class="col-sm-12 col-md-12 col-lg-6">
+
+                <div class="jarviswidget" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+
+                    <header>
+                        <span class="widget-icon"><i class="fa fa-edit"></i></span>
+                        <h2>Cadastrar Agentes Federados</h2>
+                    </header>
+
+                    <div id="dados_cadastrais">
+                        <div class="widget-body no-padding">
+                            <div class="smart-form">
+                                <form id="form" name="form">
+                                    <fieldset>
+                                        <section>
+                                            <div class="row">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Tipo Ativo:</label>
+                                                    <select class="form-control" id="ddl-uf" name="uf">
+                                                            <option value="">Selecione</option>
+                                                            <option value="AC">Acre</option>
+                                                            <option value="AL">Alagoas</option>
+                                                            <option value="AP">Amapá</option>
+                                                            <option value="AM">Amazonas</option>
+                                                            <option value="BA">Bahia</option>
+                                                            <option value="CE">Ceará</option>
+                                                            <option value="DF">Distrito Federal</option>
+                                                            <option value="ES">Espirito Santo</option>
+                                                            <option value="GO">Goiás</option>
+                                                            <option value="MA">Maranhão</option>
+                                                            <option value="MS">Mato Grosso do Sul</option>
+                                                            <option value="MT">Mato Grosso</option>
+                                                            <option value="MG">Minas Gerais</option>
+                                                            <option value="PA">Pará</option>
+                                                            <option value="PB">Paraíba</option>
+                                                            <option value="PR">Paraná</option>
+                                                            <option value="PE">Pernambuco</option>
+                                                            <option value="PI">Piauí</option>
+                                                            <option value="RJ">Rio de Janeiro</option>
+                                                            <option value="RN">Rio Grande do Norte</option>
+                                                            <option value="RS">Rio Grande do Sul</option>
+                                                            <option value="RO">Rondônia</option>
+                                                            <option value="RR">Roraima</option>
+                                                            <option value="SC">Santa Catarina</option>
+                                                            <option value="SP">São Paulo</option>
+                                                            <option value="SE">Sergipe</option>
+                                                            <option value="TO">Tocantins</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Descrição:</label>
+                                                    <label class="input">
+                                                        <input name="Descricao" type="text" id="descricao" />
+                                                    </label>
+                                                </div>
+
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Endereço Carteira:</label>
+                                                    <label class="input">
+                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </section>
+
+                                    </fieldset>
+                                    <footer style="margin-top: 20px;">
+                                        <input type="submit" name="btn-salvar" value="Cadastrar" id="btn-salvar" class="btn btn-primary" />
+
+                                        <button type="button" class="btn btn-default" onclick="window.location='/';">
+                                            Cancelar
+                                        </button>
+                                    </footer>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+            <article class="col-sm-12 col-md-12 col-lg-6" id="agendamentos" style="display:none;">
+
+                <div class="jarviswidget" id="wid-id-agendamentos" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+
+                    <header>
+                        <span class="widget-icon"><i class="fa fa-calendar"></i></span>
+                        <h2>Agenda de Manutenções</h2>
+                    </header>
+
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div class="smart-form table-responsive" style="padding: 15px; width: auto">
+                                <div>
+                                    <a href="#" class="btn btn-success btn-sm pull-right margin-bottom-10" data-toggle="modal" data-target="#myModal">
+                                        <i class="fa fa-plus-circle"></i> Novo Agendamento
+                                    </a>
+                                    <table id="mytable" class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" style="border-collapse:collapse;">
+                                        <thead>
+                                            <tr class="header" style="height:5px !important;">
+                                                <th class="text-center" scope="col">Tipo</th>
+                                                <th class="text-center" scope="col">Data Programada</th>
+                                                <th class="text-center" scope="col">Data Realizada</th>
+                                                <th class="text-center" scope="col">Situação</th>
+                                                <th class="text-center" scope="col">#</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+        </div>
+    </section>
+</div>
+
+

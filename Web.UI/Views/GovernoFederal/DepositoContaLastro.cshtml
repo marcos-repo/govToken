@@ -1,0 +1,61 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li>Início</li>
+        <li>Conta Lastro Governo</li>
+        <li>Depositar</li>
+    </ol>
+</div>
+
+<div id="content">
+    <section id="widget-grid" class="">
+
+        <div class="row">
+            <article class="col-sm-12 col-md-12 col-lg-6">
+
+                <div class="jarviswidget" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+
+                    <header>
+                        <span class="widget-icon"><i class="fa fa-edit"></i></span>
+                        <h2>Depósito Conta Lastro</h2>
+                    </header>
+
+                    <div id="dados_cadastrais">
+                        <div class="widget-body no-padding">
+                            <div class="smart-form">
+                                <form id="form" name="form">
+                                    <fieldset>
+                                        <section>
+                                            <input name="Id" type="hidden" id="id-ativo" />
+                                            <label class="label">Valor do Depósito:</label>
+                                            <label class="input">
+                                                <input name="Nome" type="number" id="nome" />
+                                            </label>
+                                        </section>
+                                    </fieldset>
+                                    <footer style="margin-top: 20px;">
+                                        <input type="submit" name="btn-salvar" value="Depositar" id="btn-salvar" class="btn btn-primary" />
+
+                                        <button type="button" class="btn btn-default" onclick="window.location='/';">
+                                            Cancelar
+                                        </button>
+                                    </footer>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+        </div>
+    </section>
+</div>
+
+
