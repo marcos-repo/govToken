@@ -145,18 +145,19 @@
         }
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="~/js/app.config.js"></script>
     <script src="~/js/bootstrap/bootstrap.min.js"></script>
     <script src="~/js/notification/SmartNotification.min.js"></script>
     <script src="~/js/app.min.js"></script>
+    <script src="~/js/contratos/web3.helper.js"></script>
+
+    @RenderSection("scripts", false)
 
     <script type="text/javascript">
         $(document).ready(function () {
             pageSetUp();
         })
     </script>
-
-
 </body>
-
 </html>

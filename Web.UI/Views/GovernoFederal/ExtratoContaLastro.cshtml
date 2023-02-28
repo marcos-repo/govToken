@@ -3,6 +3,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/contalastro.js"></script>
+    <script src="~/js/modulos/governofederal.extratocontalastro.js"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
@@ -41,17 +46,7 @@
                                                 <th class="text-center" scope="col">Valor</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr class="data-item">
-                                                <td class="text-center">10/01/2023</td>
-                                                <td class="text-center">Depósito</td>
-                                                <td class="text-center">R$ 10.000.000,00</td>
-                                            </tr>
-                                            <tr class="data-item">
-                                                <td class="text-center">10/02/2023</td>
-                                                <td class="text-center">Depósito</td>
-                                                <td class="text-center">R$ 15.000.000,00</td>
-                                            </tr>
+                                        <tbody>                                            
                                         </tbody>
                                     </table>
                                 </div>
