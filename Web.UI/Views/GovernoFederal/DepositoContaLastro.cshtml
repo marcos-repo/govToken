@@ -3,6 +3,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/contalastro.js"></script>
+    <script src="~/js/modulos/governofederal.depositocontalastro.js"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
@@ -29,13 +34,13 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="depositoForm" name="depositoForm">
                                     <fieldset>
                                         <section>
                                             <input name="Id" type="hidden" id="id-ativo" />
                                             <label class="label">Valor do Depósito:</label>
                                             <label class="input">
-                                                <input name="Nome" type="number" id="nome" />
+                                                <input name="valor" type="number" id="valor" min="0.01" step=".01" required />
                                             </label>
                                         </section>
                                     </fieldset>
