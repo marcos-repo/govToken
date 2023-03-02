@@ -1,4 +1,4 @@
-const jsonPath = '../../abis/ContaLastro.json'; 
+const jsonPath = '../../abis/ContaLastro.json';
 
 async function consultarExtratoSaude() {
     var contaLatro = await obterContrato(jsonPath);
@@ -36,3 +36,20 @@ async function realizarDepositoSaude(valor) {
             //destivar loading;
         })
 }
+
+async function bindEventoDepositoSaudeRealizado(funcData, funcError) {
+    var contaLatro = await obterContrato(jsonPath);
+
+    contaLatro.events.depositoSaudeRealizado()
+        .on('data', funcData)
+        .on('error', funcError);
+}
+
+async function bindEventoDepositoEducacaoRealizado(funcData, funcError) {
+    var contaLatro = await obterContrato(jsonPath);
+
+    contaLatro.events.depositoEducacaoRealizado()
+        .on('data', funcData)
+        .on('error', funcError);
+}
+    

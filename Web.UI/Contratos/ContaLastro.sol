@@ -8,17 +8,17 @@ contract ContaLastro {
     address public _owner;
     GovEducacaoToken private _educToken;
     GovSaudeToken private _saudeToken;
-    
-    uint public extratoSaudeCount = 0;
+
+    uint256 public extratoSaudeCount = 0;
     Extrato[] public _extratoSaude;
 
-    uint public extratoEducacaoCount = 0;
+    uint256 public extratoEducacaoCount = 0;
     Extrato[] public _extratoEducacao;
 
     struct Extrato {
-        uint data;
+        uint256 data;
         string descricao;
-        uint valor;
+        uint256 valor;
         string creditoDebito;
         address origem;
     }
@@ -29,20 +29,43 @@ contract ContaLastro {
         _saudeToken = saudeToken;
     }
 
-    modifier onlyOwner {
+    modifier onlyOwner() {
         require(msg.sender == _owner);
         _;
     }
 
-    function realizarDepositoSaude(uint data, uint valor) public onlyOwner {     
-        _extratoSaude.push(Extrato(data, unicode"Depósito", valor, "C", address(0)));
-        _saudeToken.mint(address(this), valor);
+    event depositoSaudeRealizado(address sender, uint256 data, uint256 valor);
+    event depositoEducacaoRealizado(
+        address sender,
+        uint256 data,
+        uint256 valor
+    );
+
+    function realizarDepositoSaude(uint256 data, uint256 valor)
+        public
+        onlyOwner
+    {
+        _extratoSaude.push(
+            Extrato(data, unicode"Depósito", valor, "C", address(0))
+        );
         extratoSaudeCount = _extratoSaude.length;
+
+        _saudeToken.mint(address(this), valor);
+
+        emit depositoSaudeRealizado(msg.sender, data, valor);
     }
 
-    function realizarDepositoEducacao(uint data, uint valor) public onlyOwner {     
-        _extratoEducacao.push(Extrato(data, unicode"Depósito", valor, "C", address(0)));
-        _educToken.mint(address(this), valor);
+    function realizarDepositoEducacao(uint256 data, uint256 valor)
+        public
+        onlyOwner
+    {
+        _extratoEducacao.push(
+            Extrato(data, unicode"Depósito", valor, "C", address(0))
+        );
         extratoEducacaoCount = _extratoEducacao.length;
+
+        _educToken.mint(address(this), valor);
+
+        emit depositoEducacaoRealizado(msg.sender, data, valor);
     }
 }

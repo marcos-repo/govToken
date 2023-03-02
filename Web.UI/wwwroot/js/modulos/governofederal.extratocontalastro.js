@@ -1,3 +1,33 @@
+(async function carregarEventos() {
+    bindEventoContaAlterada(()=> {
+        carregarGridExtrato();
+    });
+
+    bindEventoRedeAlterada(()=> {
+        carregarGridExtrato();
+    });
+
+    bindEventoDepositoSaudeRealizado(
+        (event) => {
+            console.log(event);
+            carregarGridExtrato();
+        },
+        (error) => {
+            console.log(error.message);
+        }
+    );
+
+    bindEventoDepositoEducacaoRealizado(
+        (event) => {
+            console.log(event);
+            carregarGridExtrato();
+        },
+        (error) => {
+            console.log(error.message);
+        }
+    );
+})();
+
 $(document).ready(function () {
     carregarGridExtrato();
 });
