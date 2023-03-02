@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+
+  gov-token:
+    container_name: gov-token
+    build:
+      context: .
+      dockerfile: dockerfile.govtoken
+    ports:
+      - "7545:7545"
+      - "9545:9545"
+    volumes:
+      - ../:/govtoken
+      - ../db/ganache:/govtoken/db/ganache
+    tty: true

@@ -1,0 +1,7 @@
+FROM alpine
+
+RUN apk add --no-cache bash
+
+WORKDIR /govtoken
+
+CMD /bin/bash
