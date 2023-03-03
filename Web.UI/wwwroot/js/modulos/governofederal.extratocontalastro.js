@@ -1,9 +1,9 @@
 (async function carregarEventos() {
-    bindEventoContaAlterada(()=> {
+    bindEventoContaAlterada(() => {
         carregarGridExtrato();
     });
 
-    bindEventoRedeAlterada(()=> {
+    bindEventoRedeAlterada(() => {
         carregarGridExtrato();
     });
 
@@ -32,7 +32,6 @@ $(document).ready(function () {
     carregarGridExtrato();
 });
 
-
 async function carregarGridExtrato() {
     var extrato = await consultarExtratoSaude();
     $("#mytable tbody").html("");
@@ -50,4 +49,3 @@ async function carregarGridExtrato() {
         $("#mytable tbody").append(tr);
     }
 }
-

@@ -1,46 +1,27 @@
-(async function carregarEventos() {    
-    bindEventoDepositoSaudeRealizado(
-        (event) => {
-            console.log(event);
-            mensagemSucesso($("#depositoForm fieldset"), "Depósito realizado.");
-            $("#valor").val('');
-        },
-        (error) => {
-            console.log(error);
-            mensagemErro($("#depositoForm fieldset"), error.message);
-        }
-    );
-
-    bindEventoDepositoEducacaoRealizado(
-        (event) => {
-            console.log(event);
-            mensagemSucesso($("#depositoForm fieldset"), "Depósito realizado.");
-            $("#valor").val('');
-        },
-        (error) => {
-            console.log(error);
-            mensagemErro($("#depositoForm fieldset"), error.message);
-        }
-    );
-})();
-
-$(document).ready(function(){
-    $("#depositoForm").submit(function(e){
+$(document).ready(function () {
+    $("#depositoForm").submit(function (e) {
         var valor = $("#valor").val();
-        realizarDepositoSaude(valor);
-        
+        realizarDepositoSaude(valor,
+            () => {
+                mensagemSucesso($("#depositoForm fieldset"), "Depósito realizado.");
+            },
+            (msgErro) => {
+                mensagemErro($("#depositoForm fieldset"), msgErro);
+            }
+        );
+
         return false;
     });
 
-    $("#valor").click(function(e){
+    $("#valor").click(function () {
         removerMensagemSucessoErro();
     });
 
-    $("#valor").change(function(e){
+    $("#valor").change(function () {
         removerMensagemSucessoErro();
     });
 
-    $("#depositoForm").click(function(e){
+    $("#depositoForm").click(function () {
         removerMensagemSucessoErro();
     });
 });

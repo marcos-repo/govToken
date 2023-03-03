@@ -4,7 +4,7 @@ async function consultarExtratoSaude() {
     var contaLatro = await obterContrato(jsonPath);
 
     if (contaLatro == null)
-        return;    
+        return;
 
     var arrExtrato = [];
 
@@ -18,27 +18,36 @@ async function consultarExtratoSaude() {
     return arrExtrato;
 }
 
-async function realizarDepositoSaude(valor) {
+async function realizarDepositoSaude(valor, receiptFunc, errorFunc) {
     var contaLatro = await obterContrato(jsonPath);
 
-    valor = toBlockChainDecimal(valor);
-
-    var data = toBlockChainDate(new Date());
-
-    if (contaLatro == null)
+    if (contaLatro == null) {
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
+    }
+
+    valor = toBlockChainDecimal(valor);
+    var data = toBlockChainDate(new Date());
 
     var conta = await obterConta();
 
-    //Ativar loading;
     contaLatro.methods.realizarDepositoSaude(data, valor).send({ from: conta })
         .on('receipt', (receipt) => {
-            //destivar loading;
+            if (receiptFunc != null)
+                receiptFunc(receipt);
+        })
+        .on('error', (error) => {
+            console.log(error);
+            if (errorFunc != null)
+                errorFunc(error.message);
         })
 }
 
 async function bindEventoDepositoSaudeRealizado(funcData, funcError) {
     var contaLatro = await obterContrato(jsonPath);
+
+    if (contaLatro == null)
+        return;
 
     contaLatro.events.depositoSaudeRealizado()
         .on('data', funcData)
@@ -48,8 +57,10 @@ async function bindEventoDepositoSaudeRealizado(funcData, funcError) {
 async function bindEventoDepositoEducacaoRealizado(funcData, funcError) {
     var contaLatro = await obterContrato(jsonPath);
 
+    if (contaLatro == null)
+        return;
+
     contaLatro.events.depositoEducacaoRealizado()
         .on('data', funcData)
         .on('error', funcError);
 }
-    
