@@ -5,7 +5,7 @@ import "./GovEducacaoToken.sol";
 import "./GovSaudeToken.sol";
 
 contract ContaLastro {
-    address public _owner;
+    mapping(address => bool) private _owner;
     GovEducacaoToken private _educToken;
     GovSaudeToken private _saudeToken;
 
@@ -24,14 +24,18 @@ contract ContaLastro {
     }
 
     constructor(GovEducacaoToken educToken, GovSaudeToken saudeToken) {
-        _owner = msg.sender;
+        _owner[msg.sender] = true;
         _educToken = educToken;
         _saudeToken = saudeToken;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(_owner[msg.sender] == true);
         _;
+    }
+
+    function setOwner(address owner, bool isOwner) public onlyOwner {
+        _owner[owner] = isOwner;
     }
 
     event depositoSaudeRealizado(address sender, uint256 data, uint256 valor);

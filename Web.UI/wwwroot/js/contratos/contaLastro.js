@@ -1,4 +1,4 @@
-const jsonPath = '../../abis/ContaLastro.json';
+const jsonPath = '../../abis/ContaLastro.json?v=0.0.1';
 
 async function consultarExtratoSaude() {
     var contaLatro = await obterContrato(jsonPath);
@@ -22,7 +22,7 @@ async function realizarDepositoSaude(valor, receiptFunc, errorFunc) {
     var contaLatro = await obterContrato(jsonPath);
 
     if (contaLatro == null) {
-        errorFunc(`Contrato n�o encontrado na rede '${await obterRede()}'.`);
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
     }
 
@@ -40,6 +40,26 @@ async function realizarDepositoSaude(valor, receiptFunc, errorFunc) {
             console.log(error);
             if (errorFunc != null)
                 errorFunc(error.message);
+        })
+}
+
+async function setOwner(endereco, ehDono) {
+    var contaLatro = await obterContrato(jsonPath);
+
+    if (contaLatro == null) {
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
+        return;
+    }
+
+    var conta = await obterConta();
+
+    contaLatro.methods.setOwner(endereco, ehDono).send({ from: conta })
+        .on('receipt', (receipt) => {
+            alert('Dono setado.')
+        })
+        .on('error', (error) => {
+            console.log(error);
+            alert(error.message);
         })
 }
 
