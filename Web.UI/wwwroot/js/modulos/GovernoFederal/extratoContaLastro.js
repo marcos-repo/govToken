@@ -7,17 +7,7 @@
         carregarGridExtrato();
     });
 
-    bindEventoDepositoSaudeRealizado(
-        (event) => {
-            console.log(event);
-            carregarGridExtrato();
-        },
-        (error) => {
-            console.log(error.message);
-        }
-    );
-
-    bindEventoDepositoEducacaoRealizado(
+    bindEventoDepositoContaLastroRealizado(
         (event) => {
             console.log(event);
             carregarGridExtrato();
@@ -33,7 +23,7 @@ $(document).ready(function () {
 });
 
 async function carregarGridExtrato() {
-    var extrato = await consultarExtratoSaude();
+    var extrato = await consultarExtratoContaLastro();
     $("#mytable tbody").html("");
 
     for (var i in extrato) {
@@ -43,7 +33,7 @@ async function carregarGridExtrato() {
         var data = fromBlockChainDate(extrato[i].data);
 
         tr.append($("<td class='text-center'>").text(formatarDataHoraPadraoPtBR(data)));
-        tr.append($("<td class='text-center'>").text("Deposito"));
+        tr.append($("<td class='text-center'>").text(extrato[i].descricao));
         tr.append($("<td class='text-center'>").text("R$ " + formatarDecimalMilhar(valor, 2)));
 
         $("#mytable tbody").append(tr);

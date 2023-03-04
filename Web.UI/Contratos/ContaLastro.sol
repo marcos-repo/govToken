@@ -1,75 +1,121 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./GovToken.sol";
 import "./GovEducacaoToken.sol";
 import "./GovSaudeToken.sol";
 
+struct Extrato {
+    uint256 data;
+    string descricao;
+    uint256 valor;
+    string creditoDebito;
+    address origem;
+}
+
+enum TipoSecretaria {
+    Saude,
+    Educacao
+}
+
 contract ContaLastro {
-    mapping(address => bool) private _owner;
+    //Propriedades
+    mapping(address => bool) private _owners;
+
+    GovToken private _govToken;
     GovEducacaoToken private _educToken;
     GovSaudeToken private _saudeToken;
 
-    uint256 public extratoSaudeCount = 0;
-    Extrato[] public _extratoSaude;
+    uint256 private _qtdLinhasExtrato = 0;
+    Extrato[] private _extrato;
 
-    uint256 public extratoEducacaoCount = 0;
-    Extrato[] public _extratoEducacao;
-
-    struct Extrato {
-        uint256 data;
-        string descricao;
-        uint256 valor;
-        string creditoDebito;
-        address origem;
-    }
-
-    constructor(GovEducacaoToken educToken, GovSaudeToken saudeToken) {
-        _owner[msg.sender] = true;
+    //Construtores
+    constructor(
+        GovToken govToken,
+        GovEducacaoToken educToken,
+        GovSaudeToken saudeToken
+    ) {
+        _owners[msg.sender] = true;
+        _govToken = govToken;
         _educToken = educToken;
         _saudeToken = saudeToken;
     }
 
+    //Modificadores
     modifier onlyOwner() {
-        require(_owner[msg.sender] == true);
+        require(_owners[msg.sender] == true);
         _;
     }
 
-    function setOwner(address owner, bool isOwner) public onlyOwner {
-        _owner[owner] = isOwner;
+    modifier verificarAgenteFederado(address endereco) {
+        //TODO<RENATO>: Verificar se o endereço enviado é o de um agente federado.
+        require(true == true);
+        _;
     }
 
-    event depositoSaudeRealizado(address sender, uint256 data, uint256 valor);
-    event depositoEducacaoRealizado(
+    //Eventos
+    event depositoRealizado(address sender, uint256 data, uint256 valor);
+    event transferenciaRealizada(
         address sender,
+        address enderecoAgenteFederado,
         uint256 data,
         uint256 valor
     );
 
-    function realizarDepositoSaude(uint256 data, uint256 valor)
-        public
-        onlyOwner
-    {
-        _extratoSaude.push(
-            Extrato(data, unicode"Depósito", valor, "C", address(0))
-        );
-        extratoSaudeCount = _extratoSaude.length;
-
-        _saudeToken.mint(address(this), valor);
-
-        emit depositoSaudeRealizado(msg.sender, data, valor);
+    //Funções
+    function setOwner(address owner, bool isOwner) public onlyOwner {
+        _owners[owner] = isOwner;
     }
 
-    function realizarDepositoEducacao(uint256 data, uint256 valor)
-        public
-        onlyOwner
-    {
-        _extratoEducacao.push(
-            Extrato(data, unicode"Depósito", valor, "C", address(0))
+    function consultarExtrato() public view returns (Extrato[] memory) {
+        return _extrato;
+    }
+
+    function realizarDeposito(uint256 data, uint256 valor) public onlyOwner {
+        _govToken.mint(address(this), valor);
+
+        _extrato.push(Extrato(data, unicode"Depósito", valor, "C", address(0)));
+        _qtdLinhasExtrato = _extrato.length;
+
+        emit depositoRealizado(msg.sender, data, valor);
+    }
+
+    function transferirToken(
+        address enderecoAgenteFederado,
+        uint256 data,
+        uint256 valor,
+        TipoSecretaria tipoSecretaria
+    ) public onlyOwner verificarAgenteFederado(enderecoAgenteFederado) {
+        _govToken.burnFrom(address(this), valor);
+
+        if (tipoSecretaria == TipoSecretaria.Saude) {
+            _saudeToken.mint(address(this), valor);
+
+            //TODO<RENATO>: Antes de transferir, precisa liberar a permissão do gasto.
+            _saudeToken.transfer(enderecoAgenteFederado, valor);
+        } else if (tipoSecretaria == TipoSecretaria.Educacao) {
+            _educToken.mint(address(this), valor);
+
+            //TODO<RENATO>: Antes de transferir, precisa liberar a permissão do gasto.
+            _educToken.transfer(enderecoAgenteFederado, valor);
+        }
+
+        _extrato.push(
+            Extrato(
+                data,
+                unicode"Transferência",
+                valor,
+                "D",
+                enderecoAgenteFederado
+            )
         );
-        extratoEducacaoCount = _extratoEducacao.length;
+        _qtdLinhasExtrato = _extrato.length;
 
-        _educToken.mint(address(this), valor);
-
-        emit depositoEducacaoRealizado(msg.sender, data, valor);
+        emit transferenciaRealizada(
+            msg.sender,
+            enderecoAgenteFederado,
+            data,
+            valor
+        );
     }
 }

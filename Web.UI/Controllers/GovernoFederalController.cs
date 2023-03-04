@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Web.UI.Controllers
 {
@@ -13,6 +12,11 @@ namespace Web.UI.Controllers
         public ActionResult Extrato()
         {
             return View("ExtratoContaLastro");
+        }
+
+        public ActionResult Transferir()
+        {
+            return View("TransferirContaLastro");
         }
     }
 }

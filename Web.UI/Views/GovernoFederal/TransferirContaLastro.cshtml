@@ -4,14 +4,14 @@
 
 @section scripts {
     <script src="~/js/contratos/contalastro.js?v=0.0.1.0"></script>
-    <script src="~/js/modulos/governofederal/depositoContalastro.js?v=0.0.1.0"></script>
+    <script src="~/js/modulos/governofederal/transferirContaLastro.js?v=0.0.1.0"></script>
 }
 
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
         <li>Conta Lastro Governo</li>
-        <li>Depositar</li>
+        <li>Transferir</li>
     </ol>
 </div>
 
@@ -27,24 +27,40 @@
 
                     <header>
                         <span class="widget-icon"><i class="fa fa-edit"></i></span>
-                        <h2>Depósito Conta Lastro</h2>
+                        <h2>Transferência</h2>
                     </header>
 
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="depositoForm" name="depositoForm">
+                                <form id="form" name="form">
                                     <fieldset>
                                         <section>
-                                            <input name="Id" type="hidden" id="id-ativo" />
-                                            <label class="label">Valor do Depósito:</label>
-                                            <label class="input">
-                                                <input name="valor" type="number" id="valor" min="0.01" step=".01" required />
-                                            </label>
+                                            <div class="row">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Tipo Secretaria Verba:</label>
+                                                    <select class="form-control" id="ddl-tipo-secretaria" name="tipo_secretaria">
+                                                        <option value="">Selecione</option>
+                                                        <option value="0">Saúde</option>
+                                                        <option value="1">Educação</option>
+
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Endereço Carteira:</label>
+                                                    <label class="input">
+                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                    </label>
+                                                </div>
+
+                                            </div>
                                         </section>
+
                                     </fieldset>
                                     <footer style="margin-top: 20px;">
-                                        <input type="submit" name="btn-salvar" value="Depositar" id="btn-salvar" class="btn btn-primary" />
+                                        <input type="submit" name="btn-salvar" value="Transferir" id="btn-salvar" class="btn btn-primary" />
 
                                         <button type="button" class="btn btn-default" onclick="window.location='/';">
                                             Cancelar
@@ -58,8 +74,9 @@
                 </div>
             </article>
 
+
+
         </div>
     </section>
 </div>
-
 

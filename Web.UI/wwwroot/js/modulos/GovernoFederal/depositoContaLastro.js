@@ -1,8 +1,9 @@
 $(document).ready(function () {
     $("#depositoForm").submit(function (e) {
         var valor = $("#valor").val();
-        realizarDepositoSaude(valor,
+        realizarDepositoContaLastro(valor,
             () => {
+                $("#valor").val('');
                 mensagemSucesso($("#depositoForm fieldset"), "Depósito realizado.");
             },
             (msgErro) => {

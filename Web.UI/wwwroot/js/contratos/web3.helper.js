@@ -9,9 +9,24 @@
     else {
         window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
+
+    carregarCarteiraUsuario();
+
+    bindEventoContaAlterada(() => {
+        carregarCarteiraUsuario();
+    })
 })();
 
-async function obterConta() {
+async function carregarCarteiraUsuario() {
+    var carteira = await obterContaWeb3();
+
+    if (carteira == null || carteira == '')
+        carteira = "(desconhecido)";
+
+    $("#spCarteiraUsuario").text(carteira);
+}
+
+async function obterContaWeb3() {
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
 
