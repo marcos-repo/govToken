@@ -1,41 +1,29 @@
-(async function carregarEventos() {
-    bindEventoContaAlterada(() => {
-        carregarGridExtrato();
-    });
-
-    bindEventoRedeAlterada(() => {
-        carregarGridExtrato();
-    });
-
-    bindEventoDepositoContaLastroRealizado(
-        (event) => {
-            console.log(event);
-            carregarGridExtrato();
-        },
-        (error) => {
-            console.log(error.message);
-        }
-    );
-})();
-
 $(document).ready(function () {
-    carregarGridExtrato();
+    $("#transferenciaForm").submit(function () {
+        removerMensagemSucessoErro();
+
+        var tipoSecretaria = $("#ddlTipoSecretaria").val();
+        var enderecoCarteira = $("#enderecoCarteira").val();
+        var valor = $("#valor").val();
+
+        transferirTokenContaLastro(enderecoCarteira, valor, tipoSecretaria,
+            () => {
+                $("#transferenciaForm").trigger("reset");
+                mensagemSucesso($("#transferenciaForm fieldset"), "Transferência realizada.");
+            },
+            (msgErro) => {
+                mensagemErro($("#transferenciaForm fieldset"), msgErro);
+            }
+        );
+
+        return false;
+    });
+
+    $("#transferenciaForm input").change(function () {
+        removerMensagemSucessoErro();
+    });
+
+    $("#transferenciaForm select").change(function () {
+        removerMensagemSucessoErro();
+    });
 });
-
-async function carregarGridExtrato() {
-    var extrato = await consultarExtratoContaLastro();
-    $("#mytable tbody").html("");
-
-    for (var i in extrato) {
-        var tr = $("<tr class='data-item'>");
-
-        var valor = fromBlockChainDecimal(extrato[i].valor);
-        var data = fromBlockChainDate(extrato[i].data);
-
-        tr.append($("<td class='text-center'>").text(formatarDataHoraPadraoPtBR(data)));
-        tr.append($("<td class='text-center'>").text(extrato[i].descricao));
-        tr.append($("<td class='text-center'>").text("R$ " + formatarDecimalMilhar(valor, 2)));
-
-        $("#mytable tbody").append(tr);
-    }
-}

@@ -1,9 +1,11 @@
 $(document).ready(function () {
-    $("#depositoForm").submit(function (e) {
+    $("#depositoForm").submit(function () {
+        removerMensagemSucessoErro();
+
         var valor = $("#valor").val();
         realizarDepositoContaLastro(valor,
             () => {
-                $("#valor").val('');
+                $("#depositoForm").trigger("reset");
                 mensagemSucesso($("#depositoForm fieldset"), "Depósito realizado.");
             },
             (msgErro) => {
@@ -14,15 +16,7 @@ $(document).ready(function () {
         return false;
     });
 
-    $("#valor").click(function () {
-        removerMensagemSucessoErro();
-    });
-
-    $("#valor").change(function () {
-        removerMensagemSucessoErro();
-    });
-
-    $("#depositoForm").click(function () {
+    $("#depositoForm input").change(function () {
         removerMensagemSucessoErro();
     });
 });

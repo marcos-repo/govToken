@@ -33,13 +33,13 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="transferenciaForm" name="trasnferenciaForm">
                                     <fieldset>
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Tipo Secretaria Verba:</label>
-                                                    <select class="form-control" id="ddl-tipo-secretaria" name="tipo_secretaria">
+                                                    <select class="form-control" id="ddlTipoSecretaria" name="ddlTipoSecretaria" required>
                                                         <option value="">Selecione</option>
                                                         <option value="0">Saúde</option>
                                                         <option value="1">Educação</option>
@@ -51,7 +51,14 @@
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Endereço Carteira:</label>
                                                     <label class="input">
-                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                        <input name="enderecoCarteira" type="text" id="enderecoCarteira" required />
+                                                    </label>
+                                                </div>
+
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Valor:</label>
+                                                    <label class="input">
+                                                        <input name="valor" type="number" id="valor" min="0.01" step=".01" required />
                                                     </label>
                                                 </div>
 

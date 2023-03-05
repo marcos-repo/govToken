@@ -1,4 +1,4 @@
-const jsonPath = '../../abis/ContaLastro.json?v=0.0.1.1';
+const jsonPath = '../../abis/ContaLastro.json?v=0.0.1.3';
 
 async function consultarExtratoContaLastro() {
     var contaLatro = await obterContrato(jsonPath);

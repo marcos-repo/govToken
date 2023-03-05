@@ -86,17 +86,18 @@ contract ContaLastro {
         uint256 valor,
         TipoSecretaria tipoSecretaria
     ) public onlyOwner verificarAgenteFederado(enderecoAgenteFederado) {
+        _govToken.approve(address(this), valor);
         _govToken.burnFrom(address(this), valor);
 
         if (tipoSecretaria == TipoSecretaria.Saude) {
             _saudeToken.mint(address(this), valor);
 
-            //TODO<RENATO>: Antes de transferir, precisa liberar a permissão do gasto.
+            _saudeToken.approve(enderecoAgenteFederado, valor);
             _saudeToken.transfer(enderecoAgenteFederado, valor);
         } else if (tipoSecretaria == TipoSecretaria.Educacao) {
             _educToken.mint(address(this), valor);
 
-            //TODO<RENATO>: Antes de transferir, precisa liberar a permissão do gasto.
+            _educToken.approve(enderecoAgenteFederado, valor);
             _educToken.transfer(enderecoAgenteFederado, valor);
         }
 
