@@ -4,19 +4,8 @@ pragma solidity ^0.8.0;
 import "./GovToken.sol";
 import "./GovEducacaoToken.sol";
 import "./GovSaudeToken.sol";
-
-struct Extrato {
-    uint256 data;
-    string descricao;
-    uint256 valor;
-    string creditoDebito;
-    address origem;
-}
-
-enum TipoSecretaria {
-    Saude,
-    Educacao
-}
+import "./AgenteFederado.sol";
+import "./TiposComuns.sol";
 
 contract ContaLastro {
     //Propriedades
@@ -25,6 +14,7 @@ contract ContaLastro {
     GovToken private _govToken;
     GovEducacaoToken private _educToken;
     GovSaudeToken private _saudeToken;
+    AgenteFederado private _agenteFederado;
 
     uint256 private _qtdLinhasExtrato = 0;
     Extrato[] private _extrato;
@@ -33,23 +23,24 @@ contract ContaLastro {
     constructor(
         GovToken govToken,
         GovEducacaoToken educToken,
-        GovSaudeToken saudeToken
+        GovSaudeToken saudeToken,
+        AgenteFederado agenteFederado
     ) {
         _owners[msg.sender] = true;
         _govToken = govToken;
         _educToken = educToken;
         _saudeToken = saudeToken;
+        _agenteFederado = agenteFederado;
     }
 
     //Modificadores
     modifier onlyOwner() {
-        require(_owners[msg.sender] == true);
+        require(_owners[msg.sender]);
         _;
     }
 
     modifier verificarAgenteFederado(address endereco) {
-        //TODO<RENATO>: Verificar se o endereço enviado é o de um agente federado.
-        require(true == true);
+        require(_agenteFederado.obterAgenteFederado(endereco).cadastrado);
         _;
     }
 
@@ -74,7 +65,17 @@ contract ContaLastro {
     function realizarDeposito(uint256 data, uint256 valor) public onlyOwner {
         _govToken.mint(address(this), valor);
 
-        _extrato.push(Extrato(data, unicode"Depósito", valor, "C", address(0)));
+        _extrato.push(
+            Extrato(
+                data,
+                unicode"Depósito",
+                valor,
+                "C",
+                address(0),
+                address(this),
+                "R$"
+            )
+        );
         _qtdLinhasExtrato = _extrato.length;
 
         emit depositoRealizado(msg.sender, data, valor);
@@ -85,7 +86,9 @@ contract ContaLastro {
         uint256 data,
         uint256 valor,
         TipoSecretaria tipoSecretaria
-    ) public onlyOwner verificarAgenteFederado(enderecoAgenteFederado) {
+    ) public onlyOwner {
+        string memory simboloToken;
+
         _govToken.approve(address(this), valor);
         _govToken.burnFrom(address(this), valor);
 
@@ -94,11 +97,13 @@ contract ContaLastro {
 
             _saudeToken.approve(enderecoAgenteFederado, valor);
             _saudeToken.transfer(enderecoAgenteFederado, valor);
+            simboloToken = _saudeToken.symbol();
         } else if (tipoSecretaria == TipoSecretaria.Educacao) {
             _educToken.mint(address(this), valor);
 
             _educToken.approve(enderecoAgenteFederado, valor);
             _educToken.transfer(enderecoAgenteFederado, valor);
+            simboloToken = _educToken.symbol();
         }
 
         _extrato.push(
@@ -107,10 +112,25 @@ contract ContaLastro {
                 unicode"Transferência",
                 valor,
                 "D",
-                enderecoAgenteFederado
+                address(this),
+                enderecoAgenteFederado,
+                _govToken.symbol()
             )
         );
         _qtdLinhasExtrato = _extrato.length;
+
+        _agenteFederado.incluirLinhaExtrato(
+            enderecoAgenteFederado,
+            Extrato(
+                data,
+                unicode"Depósito",
+                valor,
+                "C",
+                address(this),
+                enderecoAgenteFederado,
+                simboloToken
+            )
+        );
 
         emit transferenciaRealizada(
             msg.sender,

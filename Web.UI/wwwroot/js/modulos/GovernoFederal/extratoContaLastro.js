@@ -31,10 +31,11 @@ async function carregarGridExtrato() {
 
         var valor = fromBlockChainDecimal(extrato[i].valor);
         var data = fromBlockChainDate(extrato[i].data);
+        var simbolo = extrato[i].simboloToken;
 
         tr.append($("<td class='text-center'>").text(formatarDataHoraPadraoPtBR(data)));
         tr.append($("<td class='text-center'>").text(extrato[i].descricao));
-        tr.append($("<td class='text-center'>").text("R$ " + formatarDecimalMilhar(valor, 2)));
+        tr.append($("<td class='text-center'>").text(simbolo + " " + formatarDecimalMilhar(valor, 2)));
 
         $("#mytable tbody").append(tr);
     }

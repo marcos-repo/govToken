@@ -1,9 +1,13 @@
 $(document).ready(function () {
+    bindEventoRedeAlterada(() => {
+        carregarDropdownAgenteFederado();
+    });
+
     $("#transferenciaForm").submit(function () {
         removerMensagemSucessoErro();
 
         var tipoSecretaria = $("#ddlTipoSecretaria").val();
-        var enderecoCarteira = $("#enderecoCarteira").val();
+        var enderecoCarteira = $("#ddlAgenteFederado").val();
         var valor = $("#valor").val();
 
         transferirTokenContaLastro(enderecoCarteira, valor, tipoSecretaria,
@@ -26,4 +30,17 @@ $(document).ready(function () {
     $("#transferenciaForm select").change(function () {
         removerMensagemSucessoErro();
     });
+
+    carregarDropdownAgenteFederado();
 });
+
+async function carregarDropdownAgenteFederado() {
+    $("#ddlAgenteFederado option[data-consulta]").remove();
+
+    var agentesFederados = await listarAgentesFederados();
+
+    for (var i in agentesFederados) {
+        if (agentesFederados[i].cadastrado)
+            $("#ddlAgenteFederado").append($("<option>").attr("value", agentesFederados[i].enderecoCarteira).text(agentesFederados[i].descricao).attr("data-consulta", "S"));
+    }
+}

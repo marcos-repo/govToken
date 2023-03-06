@@ -2,6 +2,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/agentesfederados/cadastrar.js?v=@(JavascriptHelper.Versao)"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
@@ -28,13 +33,13 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="cadastrarAgenteFederadoForm" name="cadastrarAgenteFederadoForm">
                                     <fieldset>
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
-                                                    <label class="label">Tipo Ativo:</label>
-                                                    <select class="form-control" id="ddl-uf" name="uf">
+                                                    <label class="label">Estado:</label>
+                                                    <select class="form-control" id="ddlUf" name="uf">
                                                             <option value="">Selecione</option>
                                                             <option value="AC">Acre</option>
                                                             <option value="AL">Alagoas</option>
@@ -69,14 +74,14 @@
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Descrição:</label>
                                                     <label class="input">
-                                                        <input name="Descricao" type="text" id="descricao" />
+                                                        <input name="descricao" type="text" id="descricao" />
                                                     </label>
                                                 </div>
 
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Endereço Carteira:</label>
                                                     <label class="input">
-                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                        <input name="enderecoCarteira" type="text" id="enderecoCarteira" />
                                                     </label>
                                                 </div>
 
