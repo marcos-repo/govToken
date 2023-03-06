@@ -2,6 +2,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/painelServicos.js?v=0.0.1.0"></script>
+    <script src="~/js/modulos/secretaria/solicitarServico.js?v=0.0.1.0"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
@@ -28,17 +33,33 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="solicitar-servico" name="solicitar-servico">
                                     <fieldset>
+                                        <section>
+                                            <div class="row">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Descrição Resumida:</label>
+                                                    <label class="input">
+                                                        <input name="descricao-resumida" type="text" id="descricao-resumida" required  />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </section>
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Descrição:</label>
                                                     <label class="input">
-                                                        <input name="Descricao" type="text" id="descricao" />
+                                                        <input name="descricao" type="text" id="descricao" required />
                                                     </label>
                                                 </div>
                                             </div>
+                                        </section>
+                                        <section>
+                                            <label class="label">Valor do Serviço:</label>
+                                            <label class="input">
+                                                <input name="valor" type="number" id="valor" required />
+                                            </label>
                                         </section>
 
                                     </fieldset>
