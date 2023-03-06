@@ -1,41 +1,46 @@
-(async function carregarEventos() {
-    bindEventoContaAlterada(() => {
-        carregarGridExtrato();
-    });
-
-    bindEventoRedeAlterada(() => {
-        carregarGridExtrato();
-    });
-
-    bindEventoDepositoContaLastroRealizado(
-        (event) => {
-            console.log(event);
-            carregarGridExtrato();
-        },
-        (error) => {
-            console.log(error.message);
-        }
-    );
-})();
-
 $(document).ready(function () {
-    carregarGridExtrato();
+    bindEventoRedeAlterada(() => {
+        carregarDropdownAgenteFederado();
+    });
+
+    $("#transferenciaForm").submit(function () {
+        removerMensagemSucessoErro();
+
+        var tipoSecretaria = $("#ddlTipoSecretaria").val();
+        var enderecoCarteira = $("#ddlAgenteFederado").val();
+        var valor = $("#valor").val();
+
+        transferirTokenContaLastro(enderecoCarteira, valor, tipoSecretaria,
+            () => {
+                $("#transferenciaForm").trigger("reset");
+                mensagemSucesso($("#transferenciaForm fieldset"), "Transferência realizada.");
+            },
+            (msgErro) => {
+                mensagemErro($("#transferenciaForm fieldset"), msgErro);
+            }
+        );
+
+        return false;
+    });
+
+    $("#transferenciaForm input").change(function () {
+        removerMensagemSucessoErro();
+    });
+
+    $("#transferenciaForm select").change(function () {
+        removerMensagemSucessoErro();
+    });
+
+    carregarDropdownAgenteFederado();
 });
 
-async function carregarGridExtrato() {
-    var extrato = await consultarExtratoContaLastro();
-    $("#mytable tbody").html("");
+async function carregarDropdownAgenteFederado() {
+    $("#ddlAgenteFederado option[data-consulta]").remove();
 
-    for (var i in extrato) {
-        var tr = $("<tr class='data-item'>");
+    var agentesFederados = await listarAgentesFederados();
 
-        var valor = fromBlockChainDecimal(extrato[i].valor);
-        var data = fromBlockChainDate(extrato[i].data);
-
-        tr.append($("<td class='text-center'>").text(formatarDataHoraPadraoPtBR(data)));
-        tr.append($("<td class='text-center'>").text(extrato[i].descricao));
-        tr.append($("<td class='text-center'>").text("R$ " + formatarDecimalMilhar(valor, 2)));
-
-        $("#mytable tbody").append(tr);
+    for (var i in agentesFederados) {
+        if (agentesFederados[i].cadastrado)
+            $("#ddlAgenteFederado").append($("<option>").attr("value", agentesFederados[i].enderecoCarteira).text(agentesFederados[i].descricao).attr("data-consulta", "S"));
     }
 }

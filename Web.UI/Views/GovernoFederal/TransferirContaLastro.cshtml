@@ -3,8 +3,9 @@
 }
 
 @section scripts {
-    <script src="~/js/contratos/contalastro.js?v=0.0.1.0"></script>
-    <script src="~/js/modulos/governofederal/transferirContaLastro.js?v=0.0.1.0"></script>
+    <script src="~/js/contratos/contalastro.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/governofederal/transferirContaLastro.js?v=@(JavascriptHelper.Versao)"></script>
 }
 
 <div id="ribbon">
@@ -33,13 +34,13 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="transferenciaForm" name="transferenciaForm">
                                     <fieldset>
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Tipo Secretaria Verba:</label>
-                                                    <select class="form-control" id="ddl-tipo-secretaria" name="tipo_secretaria">
+                                                    <select class="form-control" id="ddlTipoSecretaria" name="ddlTipoSecretaria" required>
                                                         <option value="">Selecione</option>
                                                         <option value="0">Saúde</option>
                                                         <option value="1">Educação</option>
@@ -49,9 +50,16 @@
 
 
                                                 <div class="col col-12 col-sm-12">
-                                                    <label class="label">Endereço Carteira:</label>
+                                                    <label class="label">Agente Federado:</label>
+                                                    <select class="form-control" id="ddlAgenteFederado" name="ddlAgenteFederado" required>
+                                                        <option value="">Selecione</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Valor:</label>
                                                     <label class="input">
-                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                        <input name="valor" type="number" id="valor" min="0.01" step=".01" required />
                                                     </label>
                                                 </div>
 

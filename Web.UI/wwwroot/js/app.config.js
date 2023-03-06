@@ -41,9 +41,8 @@ voice_command_auto = false,
 voice_command_lang = 'en-US',
 
 voice_localStorage = true;
-
  	
-
+var versaoJavascriptGlobal = "0.0.0.1";
  
  
  

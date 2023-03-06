@@ -18,7 +18,7 @@ contract GovToken is ERC20, ERC20Burnable {
         _;
     }
 
-    constructor() ERC20("GovToken", "Gov") {
+    constructor() ERC20("GovToken", "GvT") {
         _owner = msg.sender;
         _mintOwner = msg.sender;
     }

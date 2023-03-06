@@ -8,17 +8,17 @@ contract GovEducacaoToken is ERC20, ERC20Burnable {
     address public _owner;
     address public _mintOwner;
 
-    modifier onlyOwner {
+    modifier onlyOwner() {
         require(msg.sender == _owner);
         _;
     }
 
-    modifier onlyMintOwner {
+    modifier onlyMintOwner() {
         require(msg.sender == _mintOwner);
         _;
     }
 
-    constructor() ERC20("GovEducacaoToken", "GovEduc") {
+    constructor() ERC20("GovEducacaoToken", "GvE") {
         _owner = msg.sender;
         _mintOwner = msg.sender;
     }

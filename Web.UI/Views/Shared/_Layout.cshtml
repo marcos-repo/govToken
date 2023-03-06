@@ -74,9 +74,6 @@
                             <a href="/AgentesFederados/Cadastrar" title="Cadastro"><span class="menu-item-parent">Cadastro</span></a>
                         </li>
                         <li class="">
-                            <a href="/AgentesFederados/Transferir" title="Transferencia"><span class="menu-item-parent">Transferencia Tokens</span></a>
-                        </li>
-                        <li class="">
                             <a href="/AgentesFederados/Extrato" title="Extrato"><span class="menu-item-parent">Extrato</span></a>
                         </li>
                     </ul>
@@ -140,11 +137,17 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    <script src="~/js/app.config.js"></script>
+    <script src="~/js/app.config.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/bootstrap/bootstrap.min.js"></script>
     <script src="~/js/notification/SmartNotification.min.js"></script>
-    <script src="~/js/app.min.js?v=0.0.1.0"></script>
-    <script src="~/js/contratos/web3.helper.js?v=0.0.1.0"></script>
+    <script src="~/js/app.min.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/web3.helper.js?v=@(JavascriptHelper.Versao)"></script>
+
+    <script type="text/javascript">
+        (function () {
+            setVersaoJavascript('@(JavascriptHelper.Versao)')
+        })();
+    </script>
 
     @RenderSection("scripts", false)
 
