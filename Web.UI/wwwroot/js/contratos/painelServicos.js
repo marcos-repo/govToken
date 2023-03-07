@@ -16,6 +16,7 @@ async function adicionarServico(
     descricao,
     valor,
     tipo,
+    //uf,
     receiptFunc, 
     errorFunc) {
     
@@ -25,9 +26,10 @@ async function adicionarServico(
             errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
             return;
         }
-
+        console.log('valor antes', valor);
         valor = toBlockChainDecimal(valor);
         var data = toBlockChainDate(new Date());
+        console.log('valor depois', valor);
 
         var conta = await obterContaWeb3();
 

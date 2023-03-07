@@ -3,6 +3,7 @@ const GovToken = artifacts.require("GovToken");
 const GovEducacaoToken = artifacts.require("GovEducacaoToken");
 const GovSaudeToken = artifacts.require("GovSaudeToken");
 const AgenteFederado = artifacts.require("AgenteFederado");
+const Fornecedor = artifacts.require("Fornecedor");
 const ContaLastro = artifacts.require("ContaLastro");
 const PainelServico = artifacts.require("PainelServico");
 
@@ -22,7 +23,10 @@ module.exports = async function (deployer) {
   await deployer.deploy(ContaLastro, GovToken.address, GovEducacaoToken.address, GovSaudeToken.address, AgenteFederado.address);
   await ContaLastro.deployed();
 
-  await deployer.deploy(PainelServico);
+  await deployer.deploy(Fornecedor);
+  fornecedorInstance = await Fornecedor.deployed();
+
+  await deployer.deploy(PainelServico, AgenteFederado.address, Fornecedor.address);
   painelServicoInstance = await PainelServico.deployed();
 
   await govTokenInstance.setMintOwner(ContaLastro.address);

@@ -23,3 +23,12 @@ struct AgenteFederadoInfo {
     address enderecoCarteira;
     bool cadastrado;
 }
+
+struct FornecedorInfo {
+    uint256 dataCadastro;
+    string uf;
+    string nome;
+    string secretaria;
+    address enderecoCarteira;
+    bool cadastrado;
+}

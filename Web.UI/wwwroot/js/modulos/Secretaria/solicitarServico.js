@@ -1,19 +1,27 @@
 
 $(document).ready(function () {
     $("#solicitar-servico").submit(function (e) {
+        removerMensagemSucessoErro();
+
         var descricaoResumida = $("#descricao-resumida").val();
         var descricao = $("#descricao").val();
         var valor = $("#valor").val();
-  
+        var tipo = $("#secretaria").val();
+        
         adicionarServico(descricaoResumida,
-                            descricao,toBlockChainDecimal(valor),"GvS",
+                         descricao,
+                         valor,
+                         tipo,
 
             () => {
-                //$("#valor").val('');
-                mensagemSucesso($("#depositoForm fieldset"), "Serviço adicionar.");
+                $("#valor").val('');
+                $("#descricao-resumida").val('');
+                $("#descricao").val('');
+                $("#secretaria").val('');
+                mensagemSucesso($("#solicitar-servico fieldset"), "Serviço solicitado com sucesso.");
             },
             (msgErro) => {
-                mensagemErro($("#depositoForm fieldset"), msgErro);
+                mensagemErro($("#solicitar-servico fieldset"), msgErro);
             }
         );
 

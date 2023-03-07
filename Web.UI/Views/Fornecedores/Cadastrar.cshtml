@@ -2,6 +2,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/fornecedor.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/fornecedor/cadastrar.js?v=@(JavascriptHelper.Versao)"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
@@ -28,56 +33,66 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="cadastrarFornecedorForm" name="cadastrarFornecedorForm">
                                     <fieldset>
-
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
-                                                    <label class="label">Secretaria:</label>
-                                                    <select class="form-control" id="ddl-uf" name="uf">
-                                                        <option value="">Selecione</option>
-                                                        <option value="AC">Secretaria 1</option>
-                                                        <option value="AC">Secretaria 2</option>
-                                                        <option value="AC">Secretaria 3</option>
-                                                        <option value="AC">Secretaria 4</option>
-
+                                                    <label class="label">Estado:</label>
+                                                    <select class="form-control" id="ddlUf" name="uf">
+                                                            <option value="">Selecione</option>
+                                                            <option value="AC">Acre</option>
+                                                            <option value="AL">Alagoas</option>
+                                                            <option value="AP">Amapá</option>
+                                                            <option value="AM">Amazonas</option>
+                                                            <option value="BA">Bahia</option>
+                                                            <option value="CE">Ceará</option>
+                                                            <option value="DF">Distrito Federal</option>
+                                                            <option value="ES">Espirito Santo</option>
+                                                            <option value="GO">Goiás</option>
+                                                            <option value="MA">Maranhão</option>
+                                                            <option value="MS">Mato Grosso do Sul</option>
+                                                            <option value="MT">Mato Grosso</option>
+                                                            <option value="MG">Minas Gerais</option>
+                                                            <option value="PA">Pará</option>
+                                                            <option value="PB">Paraíba</option>
+                                                            <option value="PR">Paraná</option>
+                                                            <option value="PE">Pernambuco</option>
+                                                            <option value="PI">Piauí</option>
+                                                            <option value="RJ">Rio de Janeiro</option>
+                                                            <option value="RN">Rio Grande do Norte</option>
+                                                            <option value="RS">Rio Grande do Sul</option>
+                                                            <option value="RO">Rondônia</option>
+                                                            <option value="RR">Roraima</option>
+                                                            <option value="SC">Santa Catarina</option>
+                                                            <option value="SP">São Paulo</option>
+                                                            <option value="SE">Sergipe</option>
+                                                            <option value="TO">Tocantins</option>
                                                     </select>
                                                 </div>
                                                 <div class="col col-12 col-sm-12">
-                                                    <label class="label">Descrição:</label>
+                                                    <label class="label">Secretaria:</label>
                                                     <label class="input">
-                                                        <input name="Descricao" type="text" id="descricao" />
+                                                        <select id="secretaria" name="secretaria" class="form-control">
+                                                            <option value="">Selecione a Secretaria</option>
+                                                            <option value="GvE">Educação</option>
+                                                            <option value="GvS">Saúde</option>
+                                                        </select>
                                                     </label>
                                                 </div>
-
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Nome:</label>
+                                                    <label class="input">
+                                                        <input name="nome" type="text" id="nome" />
+                                                    </label>
+                                                </div>
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Endereço Carteira:</label>
                                                     <label class="input">
-                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                        <input name="enderecoCarteira" type="text" id="enderecoCarteira" />
                                                     </label>
                                                 </div>
 
-                                                <div class="col col-4 col-sm-12">
-                                                    <label class="label">Banco:</label>
-                                                    <label class="input">
-                                                        <input name="Banco" type="text" id="banco" />
-                                                    </label>
-                                                </div>
-
-                                                <div class="col col-4 col-sm-12">
-                                                    <label class="label">Agencia:</label>
-                                                    <label class="input">
-                                                        <input name="ContaCorrente" type="text" id="agencia" />
-                                                    </label>
-                                                </div>
-
-                                                <div class="col col-4 col-sm-12">
-                                                    <label class="label">Conta Corrente:</label>
-                                                    <label class="input">
-                                                        <input name="ContaCorrente" type="text" id="conta-corrente" />
-                                                    </label>
-                                                </div>
                                             </div>
                                         </section>
 
@@ -96,7 +111,6 @@
 
                 </div>
             </article>
-
         </div>
     </section>
 </div>
