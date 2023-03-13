@@ -51,13 +51,11 @@ async function listarFornecedores() {
         return;
 
     fornecedores = await fornecedor.methods.listarFornecedores().call();
-    console.log(fornecedores);
     return fornecedores;
 }
 
 async function obterFornecedor(enderecoCarteira) {
     var fornecedor = await obterContrato(jsonPathFornecedor);
-
     if (fornecedor == null)
         return;
 

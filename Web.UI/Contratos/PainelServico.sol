@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
 import "./TiposComuns.sol";
 import "./AgenteFederado.sol";
 import "./Fornecedor.sol";
+import "./StringUtils.sol";
 
 struct Servico {
     uint256 id;
@@ -16,15 +18,18 @@ struct Servico {
     address executor;
 
     string uf;
-    //string agenteFederado;
     string secretaria;
     string nomeToken;
     string simboloToken;
 
     bool disponivel;
 
+    StatusServico status;
     AgenteFederadoInfo agenteFederado;
     FornecedorInfo fornecedor;
+
+    bool visaoFornecedor;
+    bool visaoAgenteFederado;
 }
 
 contract PainelServico {
@@ -34,16 +39,30 @@ contract PainelServico {
     uint256 private _id = 0;
     AgenteFederado private _agenteFederado;
     Fornecedor private _fornecedor;
+    StringUtils private _string;
 
     //Construtores
     constructor(AgenteFederado agenteFederado, Fornecedor fornecedor) {
         _agenteFederado = agenteFederado;
         _fornecedor = fornecedor;
+        _string = new StringUtils();
     }
 
     //Modificadores
     modifier onlyOwner() {
         //require(_owners[msg.sender] == true);
+        _;
+    }
+
+    modifier onlySupplier() {
+        require(_fornecedor.obterFornecedor(msg.sender).cadastrado, 
+                unicode"Operação permitida apenas para Fornecedores.");
+        _;
+    }
+
+    modifier onlyFederated() {
+        require(_agenteFederado.obterAgenteFederado(msg.sender).cadastrado, 
+                unicode"Operação permitida apenas para Agentes Federados.");
         _;
     }
 
@@ -55,8 +74,59 @@ contract PainelServico {
         //_owners[owner] = isOwner;
     }
 
-    function listarServicos() public view returns (Servico[] memory) {
-        return _listaServicos;
+
+
+    function listarServicos2() public view returns (Servico[] memory) {
+       return _listaServicos;
+    } 
+
+    
+
+    function listarServicos() public view returns (Servico[] memory listaServicos) {
+        
+        bool isAgenteFederado = _agenteFederado.obterAgenteFederado(msg.sender).cadastrado;
+        bool isFornecedor = _fornecedor.obterFornecedor(msg.sender).cadastrado;
+
+        uint256 qtdeServicosFiltrados = 0;
+        for (uint i = 0; i < _qtdServicos; i++) {
+            Servico memory servico = _listaServicos[i];
+
+            bool exibirFornecedor = isFornecedor &&
+                (servico.executor == msg.sender || servico.status == StatusServico.Disponivel)                ;
+
+            bool exibirAgenteFederado = isAgenteFederado && 
+                                     servico.solicitante == msg.sender;
+
+            if(servico.status != StatusServico.Finalizado && 
+                (exibirFornecedor || exibirAgenteFederado)) {
+                    qtdeServicosFiltrados++;
+            } 
+        }
+        
+        if(qtdeServicosFiltrados == 0)
+            return listaServicos;
+
+        listaServicos = new Servico[](qtdeServicosFiltrados);
+        uint256 j =0;
+        for (uint i = 0; i < _qtdServicos; i++) {
+            Servico memory servico = _listaServicos[i];
+            
+            bool exibirFornecedor = isFornecedor &&
+                (servico.executor == msg.sender || servico.status == StatusServico.Disponivel)                ;
+
+            bool exibirAgenteFederado = isAgenteFederado && 
+                                     servico.solicitante == msg.sender;
+
+            if(servico.status != StatusServico.Finalizado && 
+                (exibirFornecedor || exibirAgenteFederado)) {
+                    servico.visaoFornecedor = exibirFornecedor;
+                    servico.visaoAgenteFederado = exibirAgenteFederado;
+                    listaServicos[j] = servico;
+                    j++;
+            }
+        }
+
+        return listaServicos;
     } 
 
     function adicionarServico(
@@ -72,15 +142,16 @@ contract PainelServico {
         servico.descricao = descricao;
         servico.valor = valor;
         servico.disponivel = true;
+        servico.status = StatusServico.Disponivel;
 
-        if(keccak256(abi.encodePacked(tipo)) == keccak256(abi.encodePacked("GvS"))){
+        if(_string.compare(tipo,"GvS")) {
             servico.tipo = TipoSecretaria.Saude;
             servico.secretaria = unicode"Saúde";
             
             servico.nomeToken = "GovSaudeToken";
             servico.simboloToken = "GvS";
         }
-        else if(keccak256(abi.encodePacked(tipo)) == keccak256(abi.encodePacked("GvE"))){
+        else if(_string.compare(tipo,"GvE")) {
             servico.tipo = TipoSecretaria.Educacao;
             servico.secretaria = unicode"Educação";
             
@@ -89,21 +160,6 @@ contract PainelServico {
         }
         
         adicionarServico(servico);
-    }
-
-    function executarServico(uint256 id) public {
-        for (uint i = 0; i < _qtdServicos; i++) {
-            if(_listaServicos[i].id == id){
-                require(_fornecedor.obterFornecedor(msg.sender).cadastrado, 
-                unicode"Esta Conta não pode executar um serviço");
-
-                _listaServicos[i].executor = msg.sender;
-                _listaServicos[i].fornecedor = _fornecedor.obterFornecedor(msg.sender);
-                _listaServicos[i].disponivel = false;
-
-                break;
-            }
-        }
     }
 
     function adicionarServico(Servico memory servico) private {
@@ -120,5 +176,73 @@ contract PainelServico {
         _qtdServicos = _listaServicos.length;
 
         emit servicoAdicionado(servico);
+    }
+
+    function executarServico(uint256 id) public onlySupplier{
+        for (uint i = 0; i < _qtdServicos; i++) {
+            if(_listaServicos[i].id == id){
+                require(_listaServicos[i].status == StatusServico.Disponivel, 
+                        unicode"Este serviço não está mais disponível para execução.");
+                
+                FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(msg.sender);
+
+                require(_string.compare(_listaServicos[i].simboloToken,fornecedor.secretaria), 
+                        unicode"Esta operação não pode ser executada pelo owner desta carteira.");
+
+                _listaServicos[i].fornecedor = fornecedor;
+
+                _listaServicos[i].executor = msg.sender;
+                _listaServicos[i].disponivel = false;
+                _listaServicos[i].status = StatusServico.EmExecucao;
+
+                break;
+            }
+        }
+    }
+
+    function concluirSolicitarPagamentoServico(uint256 id) public onlySupplier{
+        for (uint i = 0; i < _qtdServicos; i++) {
+            if(_listaServicos[i].id == id){
+                require(_listaServicos[i].status == StatusServico.EmExecucao, 
+                        unicode"Este serviço não está em execução e seu pagamento não pode ser solicitado.");
+                
+                FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(msg.sender);
+
+                require(fornecedor.enderecoCarteira == _listaServicos[i].fornecedor.enderecoCarteira, 
+                        unicode"A Conclusão do Serviço e a Solicitação de Pagamento só podem ser realizada pelo executor do serviço.");
+
+                require(_string.compare(_listaServicos[i].simboloToken,fornecedor.secretaria), 
+                        unicode"Esta operação não pode ser executada pelo owner desta carteira.");
+                    
+                _listaServicos[i].status = StatusServico.AguardandoPagamento;
+
+                break;
+            }
+        }
+    }
+
+    function liberarPagamentoServico(uint256 id) public onlyFederated{
+        for (uint i = 0; i < _qtdServicos; i++) {
+            if(_listaServicos[i].id == id){
+                require(_listaServicos[i].status == StatusServico.AguardandoPagamento, 
+                        unicode"Este serviço não está aguardando pagamento.");
+                
+                AgenteFederadoInfo memory agenteFederado = _agenteFederado.obterAgenteFederado(msg.sender);
+
+                require(agenteFederado.enderecoCarteira == _listaServicos[i].agenteFederado.enderecoCarteira, 
+                        unicode"Somente o solicitante do serviço pode liberar o pagamento.");
+
+                _listaServicos[i].status = StatusServico.Finalizado;
+
+
+                //Chama o contrato da conta lastro para liberar o dinheiro
+                //
+                //
+                //=========================================================
+
+
+                break;
+            }
+        }
     }
 }

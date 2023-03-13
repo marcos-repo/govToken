@@ -3,8 +3,9 @@
 }
 
 @section scripts {
-    <script src="~/js/contratos/painelServicos.js?v=0.0.1.0"></script>
-    <script src="~/js/modulos/fornecedor/painelServicos.js?v=0.0.1.0"></script>
+    <script src="~/js/contratos/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/fornecedor.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/fornecedor/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
 }
 
 <div id="ribbon">
@@ -25,7 +26,7 @@
                 <div class="jarviswidget" id="wid-id-agendamentos" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
                      data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
                      data-widget-sortable="false">
-
+                    <span id="msg"></span>
                     <header>
                         <span class="widget-icon"><i class="fa fa-wrench"></i></span>
                         <h2>Serviços Disponiveis</h2>

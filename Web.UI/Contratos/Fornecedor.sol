@@ -14,12 +14,12 @@ contract Fornecedor {
 
     //Construtores
     constructor() {
-        //_owners[msg.sender] = true;
+        _owners[msg.sender] = true;
     }
 
     //Modificadores
     modifier onlyOwner() {
-        //require(_owners[msg.sender] == true);
+        require(_owners[msg.sender] == true);
         _;
     }
 
@@ -67,7 +67,7 @@ contract Fornecedor {
         public
         onlyOwner
     {
-        //require(_fornecedores[endereco].cadastrado);
+        require(_fornecedores[endereco].cadastrado);
         _extrato[endereco].push(extrato);
     }
 

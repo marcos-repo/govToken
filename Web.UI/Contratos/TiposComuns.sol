@@ -16,6 +16,13 @@ enum TipoSecretaria {
     Educacao
 }
 
+enum StatusServico {
+    Disponivel,          //0 - Liberado para Execução
+    EmExecucao,          //1 - Em Execução
+    AguardandoPagamento, //2 - Aguardando Pagamento
+    Finalizado           //3 - Finalizado
+}
+
 struct AgenteFederadoInfo {
     uint256 dataCadastro;
     string uf;

@@ -28,8 +28,3 @@ $(document).ready(function () {
         return false;
     });
 });
-
-async function solicitarServico(descricaoResumida, descricao, valor, tipo){
-    console.log(servico);
-    await adicionarServico(descricaoResumida, descricao, valor, tipo);
-}

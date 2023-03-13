@@ -1,7 +1,13 @@
 (async function carregarEventos() {
-    // bindEventoContaAlterada(() => {
-    //     carregarPainelServicos();
-    // });
+    bindEventoContaAlterada(() => {
+        removerMensagemSucessoErro();
+
+        $("#servicos-disponiveis").html("");
+        $("#servicos-em-execucao").html("");
+        $("#servicos-aguardando-pagamento").html("");
+
+        carregarPainelServicos();
+     });
 
     // bindEventoRedeAlterada(() => {
     //     carregarPainelServicos();
@@ -18,70 +24,228 @@
     // );
 })();
 
+var fornecedor = '';
+
 $(document).ready(function () {
     carregarPainelServicos();
 });
 
 async function carregarPainelServicos() {
+    var conta = await obterContaWeb3();
+    console.log('conta -> ', conta);
+    
+    fornecedor = await obterFornecedor(conta);
+    console.log('fornecedor -> ', fornecedor);
+
     var servicos = await listarServicos();
-    var painel = $("#painel-servicos");
-
-    painel.html("");
-
     console.log(servicos);
 
-    for (var i in servicos) {
-        
-        var disponivel = servicos[i].disponivel;
-        if(!disponivel)
-            continue;
-        
-        var id = servicos[i].id;
-        var data = fromBlockChainDate(servicos[i].data);
-        var descricaoResumida = servicos[i].descricaoResumida.substr(0,20);
-        var secretaria = servicos[i].secretaria;
-        var descricao = servicos[i].descricao;
-        var valor = fromBlockChainDecimal(servicos[i].valor);
-        var simboloToken = servicos[i].simboloToken;
-        var uf = servicos[i].agenteFederado.uf;
-        var descricaoAgenteFederado = servicos[i].agenteFederado.descricao;
+    var servicosDisponiveis = servicos.filter(function (s) {
+        return s.status == "0";
+    });
 
-        var html='<div id="programadas-'+id+'" class="col-xs-12 col-sm-6 col-md-4">' +
-        '    <div class="panel panel-primary">' +
-        '        <div class="panel-heading" style="color: #FFF;">' +
-        '            <h3 class="panel-title"><i class="fa fa-calendar"></i> '+ formatarDataHoraPadraoPtBR(data) +'</h3>' +
-        '        </div>' +
-        '        <div class="panel-body no-padding text-align-center">' +
-        '            <div class="the-price">' +
-        '                <h1>'+ descricaoResumida +'</h1>' +
-        '                <small>'+ descricaoAgenteFederado +' - '+ uf +'</small><br />' +
-        '                <small>Secretaria de '+ secretaria +'</small>' +
-        '                <h6>$'+ simboloToken + ' '+ formatarDecimalMilhar(valor,2) +'</h6>' +
-        '            </div>' +
-        '            <p style="padding: 10px 10px 0 10px; text-align: justify">'+ descricao +'</p>' +
-        '        </div>' +
-        '        <div class="panel-footer no-padding">' +
-        '            <a class="btn btn-primary btn-block btn-executar" data-id="'+ id +'">' +
-        '                <i class="fa fa-check"></i> Executar Serviço' +
-        '            </a>' +
-        '        </div>' + 
-        '    </div>' +
-        '</div>';
+    var servicosEmExecucao = servicos.filter(function (s) {
+        return s.status == "1";
+    });
 
-        
-        painel.append(html);
+    var servicosAguardandoPagamento = servicos.filter(function (s) {
+        return s.status == "2";
+    });
+
+    var servicosFinalizados = servicos.filter(function (s) {
+        return s.status == "3";
+    });
+
+    console.log('servicosDisponiveis -> ', servicosDisponiveis);
+    console.log('servicosEmExecucao -> ', servicosEmExecucao);
+    console.log('servicosAguardandoPagamento -> ', servicosAguardandoPagamento);
+    console.log('servicosFinalizados -> ', servicosFinalizados);
+
+    var painel = $("#servicos-disponiveis");
+    painel.html("");
+
+    for (var i in servicosDisponiveis) {
+        painel.append(html(servicosDisponiveis[i]));
     }
 
-    $(".btn-executar").bind("click", async function(){
-        var id = $(this).data("id");
-        await executar(id);
-        
-        //$("#programadas-"+id).remove();
+    painel = $("#servicos-em-execucao");
+    painel.html("");
+    for (var i in servicosEmExecucao) {
+        painel.append(html(servicosEmExecucao[i]));
+    }
+
+    painel = $("#servicos-aguardando-pagamento");
+    painel.html("");
+    for (var i in servicosAguardandoPagamento) {
+        painel.append(html(servicosAguardandoPagamento[i]));
+    }
+
+    configuraBotoes();
+}
+
+
+var visaoAgenteFederado = false;
+function html(servico) {
+    var id = servico.id;
+    var data = fromBlockChainDate(servico.data);
+    var descricaoResumida = servico.descricaoResumida.substr(0, 20);
+    var secretaria = servico.secretaria;
+    var descricao = servico.descricao;
+    var valor = fromBlockChainDecimal(servico.valor);
+    var simboloToken = servico.simboloToken;
+    var uf = servico.agenteFederado.uf;
+    var descricaoAgenteFederado = servico.agenteFederado.descricao;
+    
+    var visaoFornecedor = servico.visaoFornecedor;
+    visaoAgenteFederado = servico.visaoAgenteFederado;
+
+    var fornecedor = servico.fornecedor.nome == '' || visaoFornecedor ? '&nbsp;' : servico.fornecedor.nome;
+
+    var status = servico.status;
+    var classe = "";
+    var bgColor = "";
+    var btnLabel = "";
+    var btnClass = "";
+    switch (status) {
+        case "0":
+            classe = "primary";
+            btnLabel = "Executar Serviço";
+            btnClass = "executar";
+            break;
+        case "1":
+            classe = "danger";
+            bgColor = "#A90329";
+            btnLabel = "Concluir/Solicitar Pagamento";
+            btnClass = "concluir";
+            break;
+        case "2":
+            classe = "success";
+            bgColor = "#71843f";
+            btnLabel = "Aguardando Pagamento";
+            btnClass = "aguardando-pagamento";
+            break;
+    }
+
+    var botao = visaoFornecedor || status == "2" ?
+                '<a id="btn-' + id + '" class="btn btn-' + classe + ' btn-block btn-' + btnClass + '" data-id="' + id + '">' +
+                '   <i class="fa fa-check"></i> ' + btnLabel +
+                '</a>' : '';
+
+    return '<div id="programadas-' + id + '" class="panel panel-' + classe +'">' +
+           '   <div class="panel-heading" style="background-color: ' + bgColor + '; color: #FFF;">' +
+           '       <h3 class="panel-title"><i class="fa fa-calendar"></i> ' + formatarDataHoraPadraoPtBR(data) + '</h3>' +
+           '   </div>' +
+           '   <div class="panel-body no-padding text-align-center">' +
+           '       <div class="the-price">' +
+           '           <h1>' + descricaoResumida + '</h1>' +
+           '           <small>' + descricaoAgenteFederado + ' - ' + uf + '</small><br />' +
+           '           <small>Secretaria de ' + secretaria + '</small>' +
+           '           <h6>' + simboloToken + '$ ' + formatarDecimalMilhar(valor, 2) + '</h6>' +
+           '           <small>' + fornecedor + '</small>' +
+           '       </div>' +
+           '       <p style="padding: 10px 10px 0 10px; text-align: justify">' + descricao + '</p>' +
+           '   </div>' +
+           '   <div class="panel-footer no-padding">' +
+           botao +
+           '   </div>' +
+           '</div>';
+}
+
+
+async function executar(id){
+    removerMensagemSucessoErro();
+    processando(id, true);
+    await executarServico(id, 
+    () => {
+        processando(id, false);
+        mensagemSucesso($("#msg"), "Serviço liberado para execução com sucesso.");
+        carregarPainelServicos();
+    },
+    (msgErro) => {
+        processando(id, false);
+        mensagemErro($("#msg"), msgErro);
     });
 }
 
-async function executar(id){
-    await executarServico(id, carregarPainelServicos());
+async function concluir(id) {
+    removerMensagemSucessoErro();
+    processando(id, true);
+    await concluirServico(id,
+        () => {
+            processando(id, false);
+            mensagemSucesso($("#msg"), "Conclusão e Solicitação de Pagamento realizadas com sucesso.");
+            carregarPainelServicos();
+        },
+        (msgErro) => {
+            processando(id, false);
+            mensagemErro($("#msg"), msgErro);
+        });
+}
+
+async function liberarPagamento(id) {
+    removerMensagemSucessoErro();
+    processando(id, true);
+    await liberarPagamentoServico(id,
+        () => {
+            processando(id, false);
+            mensagemSucesso($("#msg"), "Pagamento liberado com sucesso.");
+            carregarPainelServicos();
+        },
+        (msgErro) => {
+            processando(id, false);
+            mensagemErro($("#msg"), msgErro);
+        });
+}
+
+function processando(id, status){
+
+    if(status){
+        $(".btn-executar").addClass("disabled");
+        $(".btn-concluir").addClass("disabled");
+
+        $("#btn-"+id).removeClass("disabled");
+        $("#btn-"+id).unbind("click");
+        $("#btn-"+id).html('<i class="fa fa-circle-o-notch fa-spin"></i> Processando...');
+    }
+    else {
+        $(".btn-executar").removeClass("disabled");
+        $(".btn-concluir").removeClass("disabled");
+
+        bindEventos();
+
+        $(".btn-executar").html('<i class="fa fa-check"></i> Executar Serviço');
+        $(".btn-concluir").html('<i class="fa fa-check"></i> Concluir/Solicitar Pagamento');
+    }
+}
+
+function bindEventos() {
+    $(".btn-executar").bind("click", async function () {
+        var id = $(this).data("id");
+        await executar(id);
+    });
+
+    $(".btn-concluir").bind("click", async function () {
+        var id = $(this).data("id");
+        await concluir(id);
+    });
+
+    $(".btn-success").bind("click", async function () {
+        var id = $(this).data("id");
+        await liberarPagamento(id);
+    });
+}
+
+function configuraBotoes() {
+    bindEventos();
+
+    if (!visaoAgenteFederado) {
+        $(".btn-success").unbind("click");
+        $(".btn-success").removeClass("btn");
+        $(".btn-success").addClass("btn-no-click");
+    }
+
+    $(".btn-success").html('<i class="fa fa-dollar"></i> ' + (visaoAgenteFederado ? 'Liberar' : 'Aguardando ') + 'Pagamento');
+    $(".btn-success").css("background-color", "#71843f");
 }
 
 

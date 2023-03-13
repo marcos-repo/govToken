@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+    <script src="~/js/contratos/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/fornecedor.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/fornecedor/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
+}
+
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li>Início</li>
+        <li>Painel Serviços</li>
+    </ol>
+</div>
+
+<div id="content">
+    <section id="widget-grid" class="">
+
+        <div class="row">
+
+            <article class="col-sm-12 col-md-12 col-lg-10">
+
+                <div class="jarviswidget" id="wid-id-agendamentos" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+                    <span id="msg"></span>
+                    <header>
+                        <span class="widget-icon"><i class="fa fa-wrench"></i></span>
+                        <h2>Painel de Serviços</h2>
+                    </header>
+
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div style="margin: 15px 0 0 0;" class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-4" id="container-programadas">
+                                    <div class="panel-heading" style="background-color: #3276B1; color: #FFF; margin-bottom: 20px;">
+                                        <h3 class="panel-title" style="text-align: center;">Disponíveis para Execução</h3>
+                                    </div>
+                                    <div id="servicos-disponiveis"></div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4" id="container-atrasadas">
+                                    <div class="panel-heading" style="background-color: #A90329; color: #FFF; margin-bottom: 20px;">
+                                        <h3 class="panel-title" style="text-align: center;">Em Execução</h3>
+                                    </div>
+                                    <div id="servicos-em-execucao"></div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4" id="container-corretivas">
+                                    <div class="panel-heading" style="background-color: #71843f; color: #FFF; margin-bottom: 20px;">
+                                        <h3 class="panel-title" style="text-align: center;">Aguardando Pagamento</h3>
+                                    </div>
+                                    <div id="servicos-aguardando-pagamento"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+        </div>
+    </section>
+</div>
