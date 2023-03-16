@@ -17,7 +17,7 @@ async function cadastrarAgenteFederado(uf, descricao, enderecoCarteira, receiptF
     if (agenteFederado == null) {
         errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
-    }    
+    }
 
     var data = toBlockChainDate(new Date());
 
@@ -43,6 +43,38 @@ async function cadastrarAgenteFederado(uf, descricao, enderecoCarteira, receiptF
         })
 }
 
+async function cadastrarSecretaria(descricao, enderecoCarteira, receiptFunc, errorFunc) {
+    var agenteFederado = await obterContrato(jsonPathAgenteFederado);
+
+    if (agenteFederado == null) {
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
+        return;
+    }
+
+    var data = toBlockChainDate(new Date());
+
+    var conta = await obterContaWeb3();
+
+    secretariaInfo = {
+        descricao: descricao,
+        enderecoCarteira: enderecoCarteira,
+        agenteFederado: conta,
+        cadastrado: true,
+        dataCadastro: data
+    };
+
+    agenteFederado.methods.cadastrarSecretaria(secretariaInfo).send({ from: conta })
+        .on('receipt', (receipt) => {
+            if (receiptFunc != null)
+                receiptFunc(receipt);
+        })
+        .on('error', (error) => {
+            console.log(error);
+            if (errorFunc != null)
+                errorFunc(error.message);
+        })
+}
+
 async function listarAgentesFederados() {
     var agenteFederado = await obterContrato(jsonPathAgenteFederado);
 
@@ -50,6 +82,17 @@ async function listarAgentesFederados() {
         return;
 
     agentesFederados = await agenteFederado.methods.listarAgentesFederados().call();
+
+    return agentesFederados;
+}
+
+async function listarSecretariasAgenteFederado(enderecoAgenteFederado) {
+    var agenteFederado = await obterContrato(jsonPathAgenteFederado);
+
+    if (agenteFederado == null)
+        return;
+
+    agentesFederados = await agenteFederado.methods.listarSecretariasAgenteFederado(enderecoAgenteFederado).call();
 
     return agentesFederados;
 }

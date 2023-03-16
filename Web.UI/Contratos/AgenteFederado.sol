@@ -5,12 +5,18 @@ import "./TiposComuns.sol";
 
 contract AgenteFederado {
     //Propriedades
+
     uint256 private _qtdAgentesFederados;
     address[] private _enderecosAgentesFederados;
     mapping(address => AgenteFederadoInfo) private _agentesFederados;
 
+    uint256 private _qtdSecretarias;
+    address[] private _enderecosSecretarias;
+    mapping(address => SecretariaInfo) private _secretarias;
+    mapping(address => SecretariaInfo[]) private _secretariasAgenteFederado;
+
     mapping(address => bool) private _owners;
-    mapping(address => Extrato[]) private _extrato;
+    mapping(address => ExtratoInfo[]) private _extrato;
 
     //Construtores
     constructor() {
@@ -19,7 +25,18 @@ contract AgenteFederado {
 
     //Modificadores
     modifier onlyOwner() {
-        require(_owners[msg.sender] == true);
+        require(
+            _owners[msg.sender],
+            unicode"Somente os resposáveis pelo contrato de Agente Federado podem realizar essa operação."
+        );
+        _;
+    }
+
+    modifier onlyFederated() {
+        require(
+            _agentesFederados[msg.sender].cadastrado,
+            unicode"Somente um agente federado pode realizar essa operação."
+        );
         _;
     }
 
@@ -36,6 +53,19 @@ contract AgenteFederado {
         _agentesFederados[agenteFederado.enderecoCarteira] = agenteFederado;
         _enderecosAgentesFederados.push(agenteFederado.enderecoCarteira);
         _qtdAgentesFederados = _enderecosAgentesFederados.length;
+    }
+
+    function cadastrarSecretaria(SecretariaInfo memory secretaria)
+        public
+        onlyFederated
+    {
+        secretaria.agenteFederado = msg.sender;
+        secretaria.cadastrado = true;
+        _secretarias[secretaria.enderecoCarteira] = secretaria;
+        _enderecosSecretarias.push(secretaria.enderecoCarteira);
+        _qtdSecretarias = _enderecosSecretarias.length;
+
+        _secretariasAgenteFederado[msg.sender].push(secretaria);
     }
 
     function listarAgentesFederados()
@@ -55,6 +85,27 @@ contract AgenteFederado {
         return agentesFederados;
     }
 
+    function listarSecretarias() public view returns (SecretariaInfo[] memory) {
+        SecretariaInfo[] memory secretarias = new SecretariaInfo[](
+            _qtdSecretarias
+        );
+
+        for (uint256 i = 0; i < _qtdSecretarias; i++) {
+            address endereco = _enderecosSecretarias[i];
+            secretarias[i] = _secretarias[endereco];
+        }
+
+        return secretarias;
+    }
+
+    function listarSecretariasAgenteFederado(address endereco)
+        public
+        view
+        returns (SecretariaInfo[] memory)
+    {
+        return _secretariasAgenteFederado[endereco];
+    }
+
     function obterAgenteFederado(address endereco)
         public
         view
@@ -63,18 +114,26 @@ contract AgenteFederado {
         return _agentesFederados[endereco];
     }
 
-    function incluirLinhaExtrato(address endereco, Extrato memory extrato)
+    function obterSecretaria(address endereco)
+        public
+        view
+        returns (SecretariaInfo memory)
+    {
+        return _secretarias[endereco];
+    }
+
+    function incluirLinhaExtrato(address endereco, ExtratoInfo memory extrato)
         public
         onlyOwner
     {
-        require(_agentesFederados[endereco].cadastrado);
+        require(_secretarias[endereco].cadastrado);
         _extrato[endereco].push(extrato);
     }
 
     function consultarExtrato(address endereco)
         public
         view
-        returns (Extrato[] memory)
+        returns (ExtratoInfo[] memory)
     {
         return _extrato[endereco];
     }

@@ -36,7 +36,7 @@ async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
         })
 }
 
-async function transferirTokenContaLastro(enderecoAgenteFederado, valor, tipoSecretaria, receiptFunc, errorFunc) {
+async function transferirTokenContaLastro(enderecoSecretaria, valor, receiptFunc, errorFunc) {
     var contaLatro = await obterContrato(jsonPathContaLastro);
 
     if (contaLatro == null) {
@@ -49,7 +49,7 @@ async function transferirTokenContaLastro(enderecoAgenteFederado, valor, tipoSec
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.transferirToken(enderecoAgenteFederado, data, valor, tipoSecretaria).send({ from: conta })
+    contaLatro.methods.transferirToken(enderecoSecretaria, data, valor).send({ from: conta })
         .on('receipt', (receipt) => {
             if (receiptFunc != null)
                 receiptFunc(receipt);

@@ -2,11 +2,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/secretaria/cadastrar.js?v=@(JavascriptHelper.Versao)"></script>
+}
+
 <div id="ribbon">
     <ol class="breadcrumb">
         <li>Início</li>
         <li>Secretarias</li>
-        <li>Cadastrar</li>
+        <li>Cadastrar Secretaria</li>
     </ol>
 </div>
 
@@ -28,32 +33,28 @@
                     <div id="dados_cadastrais">
                         <div class="widget-body no-padding">
                             <div class="smart-form">
-                                <form id="form" name="form">
+                                <form id="cadastrarSecretariaForm" name="cadastrarSecretariaForm">
                                     <fieldset>
                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Agente Federado:</label>
-                                                    <select class="form-control" id="ddl-uf" name="uf">
-                                                        <option value="">Selecione</option>
-                                                        <option value="AC">Agente 1</option>
-                                                        <option value="AC">Agente 2</option>
-                                                        <option value="AC">Agente 3</option>
-                                                        <option value="AC">Agente 4</option>
-
-                                                    </select>
+                                                    <label class="input">
+                                                        <input id="ttbAgenteFederado" type="text" readonly />
+                                                    </label>
                                                 </div>
+
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Descrição:</label>
                                                     <label class="input">
-                                                        <input name="Descricao" type="text" id="descricao" />
+                                                        <input name="descricao" type="text" id="descricao" required />
                                                     </label>
                                                 </div>
 
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Endereço Carteira:</label>
                                                     <label class="input">
-                                                        <input name="EnderecoCarteira" type="text" id="endereco-carteira" />
+                                                        <input name="enderecoCarteira" type="text" id="enderecoCarteira" required />
                                                     </label>
                                                 </div>
 
@@ -72,10 +73,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </article>
-
         </div>
     </section>
 </div>

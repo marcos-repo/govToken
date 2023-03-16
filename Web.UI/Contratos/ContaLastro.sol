@@ -2,9 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "./GovToken.sol";
-import "./GovEducacaoToken.sol";
-import "./GovSaudeToken.sol";
 import "./AgenteFederado.sol";
+import "./PainelServico.sol";
 import "./TiposComuns.sol";
 
 contract ContaLastro {
@@ -12,35 +11,37 @@ contract ContaLastro {
     mapping(address => bool) private _owners;
 
     GovToken private _govToken;
-    GovEducacaoToken private _educToken;
-    GovSaudeToken private _saudeToken;
     AgenteFederado private _agenteFederado;
+    PainelServico private _painelServico;
 
-    uint256 private _qtdLinhasExtrato = 0;
-    Extrato[] private _extrato;
+    ExtratoInfo[] private _extrato;
 
     //Construtores
     constructor(
         GovToken govToken,
-        GovEducacaoToken educToken,
-        GovSaudeToken saudeToken,
-        AgenteFederado agenteFederado
+        AgenteFederado agenteFederado,
+        PainelServico painelServico
     ) {
         _owners[msg.sender] = true;
         _govToken = govToken;
-        _educToken = educToken;
-        _saudeToken = saudeToken;
         _agenteFederado = agenteFederado;
+        _painelServico = painelServico;
     }
 
     //Modificadores
     modifier onlyOwner() {
-        require(_owners[msg.sender]);
+        require(
+            _owners[msg.sender],
+            unicode"Somente os resposáveis pelo contrato da Conta Lastro podem realizar essa operação."
+        );
         _;
     }
 
-    modifier verificarAgenteFederado(address endereco) {
-        require(_agenteFederado.obterAgenteFederado(endereco).cadastrado);
+    modifier onlyServicePanel() {
+        require(
+            msg.sender == address(_painelServico),
+            unicode"Somente o contrato do painel de serviço pode realizar essa operação."
+        );
         _;
     }
 
@@ -52,13 +53,19 @@ contract ContaLastro {
         uint256 data,
         uint256 valor
     );
+    event solicitacaoRepasseRealizada(
+        address fornecedor,
+        uint256 data,
+        uint256 valor,
+        uint256 idServico
+    );
 
     //Funções
     function setOwner(address owner, bool isOwner) public onlyOwner {
         _owners[owner] = isOwner;
     }
 
-    function consultarExtrato() public view returns (Extrato[] memory) {
+    function consultarExtrato() public view returns (ExtratoInfo[] memory) {
         return _extrato;
     }
 
@@ -66,7 +73,7 @@ contract ContaLastro {
         _govToken.mint(address(this), valor);
 
         _extrato.push(
-            Extrato(
+            ExtratoInfo(
                 data,
                 unicode"Depósito",
                 valor,
@@ -76,67 +83,84 @@ contract ContaLastro {
                 "R$"
             )
         );
-        _qtdLinhasExtrato = _extrato.length;
 
         emit depositoRealizado(msg.sender, data, valor);
     }
 
     function transferirToken(
-        address enderecoAgenteFederado,
+        address enderecoSecretaria,
         uint256 data,
-        uint256 valor,
-        TipoSecretaria tipoSecretaria
+        uint256 valor
     ) public onlyOwner {
-        string memory simboloToken;
+        require(
+            _agenteFederado.obterSecretaria(enderecoSecretaria).cadastrado,
+            unicode"O endereço informado deve ser o de uma secretaria."
+        );
 
         _govToken.approve(address(this), valor);
-        _govToken.burnFrom(address(this), valor);
-
-        if (tipoSecretaria == TipoSecretaria.Saude) {
-            _saudeToken.mint(address(this), valor);
-
-            _saudeToken.approve(enderecoAgenteFederado, valor);
-            _saudeToken.transfer(enderecoAgenteFederado, valor);
-            simboloToken = _saudeToken.symbol();
-        } else if (tipoSecretaria == TipoSecretaria.Educacao) {
-            _educToken.mint(address(this), valor);
-
-            _educToken.approve(enderecoAgenteFederado, valor);
-            _educToken.transfer(enderecoAgenteFederado, valor);
-            simboloToken = _educToken.symbol();
-        }
+        _govToken.transfer(enderecoSecretaria, valor);
 
         _extrato.push(
-            Extrato(
+            ExtratoInfo(
                 data,
                 unicode"Transferência",
                 valor,
                 "D",
                 address(this),
-                enderecoAgenteFederado,
+                enderecoSecretaria,
                 _govToken.symbol()
             )
         );
-        _qtdLinhasExtrato = _extrato.length;
 
         _agenteFederado.incluirLinhaExtrato(
-            enderecoAgenteFederado,
-            Extrato(
+            enderecoSecretaria,
+            ExtratoInfo(
                 data,
                 unicode"Depósito",
                 valor,
                 "C",
                 address(this),
-                enderecoAgenteFederado,
-                simboloToken
+                enderecoSecretaria,
+                _govToken.symbol()
             )
         );
 
         emit transferenciaRealizada(
             msg.sender,
-            enderecoAgenteFederado,
+            enderecoSecretaria,
             data,
             valor
+        );
+    }
+
+    function solicitarRepasse(
+        address enderecoFornecedor,
+        uint256 idServico,
+        uint256 data,
+        uint256 valor
+    ) public onlyServicePanel {
+        _govToken.transferFrom(address(_painelServico), address(this), valor);
+
+        _govToken.approve(address(this), valor);
+        _govToken.burnFrom(address(this), valor);
+
+        _extrato.push(
+            ExtratoInfo(
+                data,
+                unicode"Repasse",
+                valor,
+                "D",
+                address(this),
+                enderecoFornecedor,
+                "R$"
+            )
+        );
+
+        emit solicitacaoRepasseRealizada(
+            enderecoFornecedor,
+            data,
+            valor,
+            idServico
         );
     }
 }

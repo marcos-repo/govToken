@@ -10,7 +10,7 @@ contract Fornecedor {
     mapping(address => FornecedorInfo) private _fornecedores;
 
     mapping(address => bool) private _owners;
-    mapping(address => Extrato[]) private _extrato;
+    mapping(address => ExtratoInfo[]) private _extrato;
 
     //Construtores
     constructor() {
@@ -63,7 +63,7 @@ contract Fornecedor {
         return _fornecedores[endereco];
     }
 
-    function incluirLinhaExtrato(address endereco, Extrato memory extrato)
+    function incluirLinhaExtrato(address endereco, ExtratoInfo memory extrato)
         public
         onlyOwner
     {
@@ -74,7 +74,7 @@ contract Fornecedor {
     function consultarExtrato(address endereco)
         public
         view
-        returns (Extrato[] memory)
+        returns (ExtratoInfo[] memory)
     {
         return _extrato[endereco];
     }
