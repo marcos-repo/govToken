@@ -11,7 +11,7 @@ async function consultarExtratoFornecedor(endereco) {
     return extrato;
 }
 
-async function cadastrarFornecedor(uf, nome, secretaria, enderecoCarteira, receiptFunc, errorFunc) {
+async function cadastrarFornecedor(uf, nome, enderecoCarteira, receiptFunc, errorFunc) {
     var fornecedor = await obterContrato(jsonPathFornecedor);
 
     if (fornecedor == null) {
@@ -25,9 +25,7 @@ async function cadastrarFornecedor(uf, nome, secretaria, enderecoCarteira, recei
         dataCadastro: data,
         uf: uf,
         nome: nome,
-        secretaria: secretaria,
         enderecoCarteira: enderecoCarteira,
-        cadastrado: true
     }
 
     var conta = await obterContaWeb3();

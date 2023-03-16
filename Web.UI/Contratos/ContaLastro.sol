@@ -84,6 +84,18 @@ contract ContaLastro {
             )
         );
 
+        _extrato.push(
+            ExtratoInfo(
+                data,
+                unicode"Mint Token",
+                valor,
+                "C",
+                address(0),
+                address(this),
+                _govToken.symbol()
+            )
+        );
+
         emit depositoRealizado(msg.sender, data, valor);
     }
 
@@ -143,6 +155,30 @@ contract ContaLastro {
 
         _govToken.approve(address(this), valor);
         _govToken.burnFrom(address(this), valor);
+
+        _extrato.push(
+            ExtratoInfo(
+                data,
+                unicode"Solicitação Repasse",
+                valor,
+                "C",
+                address(_painelServico),
+                address(this),
+                _govToken.symbol()
+            )
+        );
+
+        _extrato.push(
+            ExtratoInfo(
+                data,
+                unicode"Queima Token",
+                valor,
+                "D",
+                address(this),
+                address(0),
+                _govToken.symbol()
+            )
+        );
 
         _extrato.push(
             ExtratoInfo(

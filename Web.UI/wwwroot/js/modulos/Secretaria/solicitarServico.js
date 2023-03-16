@@ -6,18 +6,14 @@ $(document).ready(function () {
         var descricaoResumida = $("#descricao-resumida").val();
         var descricao = $("#descricao").val();
         var valor = $("#valor").val();
-        var tipo = $("#secretaria").val();
-        
-        adicionarServico(descricaoResumida,
-                         descricao,
-                         valor,
-                         tipo,
 
+        adicionarServico(descricaoResumida,
+            descricao,
+            valor,
             () => {
                 $("#valor").val('');
                 $("#descricao-resumida").val('');
                 $("#descricao").val('');
-                $("#secretaria").val('');
                 mensagemSucesso($("#solicitar-servico fieldset"), "Serviço solicitado com sucesso.");
             },
             (msgErro) => {

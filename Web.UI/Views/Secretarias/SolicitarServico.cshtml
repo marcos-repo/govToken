@@ -3,8 +3,9 @@
 }
 
 @section scripts {
-    <script src="~/js/contratos/painelServicos.js?v=0.0.1.0"></script>
-    <script src="~/js/modulos/secretaria/solicitarServico.js?v=0.0.1.0"></script>
+    <script src="~/js/contratos/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/govToken.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/secretaria/solicitarServico.js?v=@(JavascriptHelper.Versao)"></script>
 }
 
 <div id="ribbon">
@@ -35,21 +36,7 @@
                             <div class="smart-form">
                                 <form id="solicitar-servico" name="solicitar-servico">
                                     <fieldset>
-                                        <section>
-                                            <div class="row">
-                                                <div class="col col-12 col-sm-12">
-                                                    <label class="label">Secretaria:</label>
-                                                    <label class="input">
-                                                        <select id="secretaria" name="secretaria" class="form-control">
-                                                            <option value="">Selecione a Secretaria</option>
-                                                            <option value="GvE">Educação</option>
-                                                            <option value="GvS">Saúde</option>
-                                                        </select>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </section>
-                                        <section>
+                                         <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Descrição Resumida:</label>
@@ -72,7 +59,7 @@
                                         <section>
                                             <label class="label">Valor do Serviço:</label>
                                             <label class="input">
-                                                <input name="valor" type="number" id="valor" required />
+                                                <input name="valor" type="number" id="valor" min="0.01" step=".01" required />
                                             </label>
                                         </section>
 

@@ -10,7 +10,6 @@ import "./StringUtils.sol";
 
 contract PainelServico {
     //Propriedades
-    uint256 private _qtdServicos = 0;
     ServicoInfo[] private _listaServicos;
     uint256 private _id = 0;
 
@@ -46,10 +45,10 @@ contract PainelServico {
         _;
     }
 
-    modifier onlyFederated() {
+    modifier onlySecretary() {
         require(
-            _agenteFederado.obterAgenteFederado(msg.sender).cadastrado,
-            unicode"Operação permitida apenas para Agentes Federados."
+            _agenteFederado.obterSecretaria(msg.sender).cadastrado,
+            unicode"Operação permitida apenas para uma Secretaria."
         );
         _;
     }
@@ -79,13 +78,15 @@ contract PainelServico {
         view
         returns (ServicoInfo[] memory listaServicos)
     {
-        bool isAgenteFederado = _agenteFederado
-            .obterAgenteFederado(msg.sender)
-            .cadastrado;
         bool isFornecedor = _fornecedor.obterFornecedor(msg.sender).cadastrado;
+        bool isAgenteFederado = _agenteFederado
+            .obterSecretaria(msg.sender)
+            .cadastrado;
 
+        uint256 qtdServicos = _listaServicos.length;
         uint256 qtdeServicosFiltrados = 0;
-        for (uint256 i = 0; i < _qtdServicos; i++) {
+
+        for (uint256 i = 0; i < qtdServicos; i++) {
             ServicoInfo memory servico = _listaServicos[i];
 
             bool exibirFornecedor = isFornecedor &&
@@ -107,7 +108,7 @@ contract PainelServico {
 
         listaServicos = new ServicoInfo[](qtdeServicosFiltrados);
         uint256 j = 0;
-        for (uint256 i = 0; i < _qtdServicos; i++) {
+        for (uint256 i = 0; i < qtdServicos; i++) {
             ServicoInfo memory servico = _listaServicos[i];
 
             bool exibirFornecedor = isFornecedor &&
@@ -134,9 +135,17 @@ contract PainelServico {
     function adicionarServico(
         string memory descricaoResumida,
         string memory descricao,
-        uint256 valor,
-        string memory tipo
+        uint256 valor
     ) public {
+        SecretariaInfo memory secretaria = _agenteFederado.obterSecretaria(
+            msg.sender
+        );
+
+        require(
+            secretaria.cadastrado,
+            unicode"Somente uma secretaria pode solicitar um serviço."
+        );
+
         ServicoInfo memory servico;
 
         servico.id = ++_id;
@@ -145,143 +154,114 @@ contract PainelServico {
         servico.valor = valor;
         servico.disponivel = true;
         servico.status = StatusServicoEnum.Disponivel;
-
-        if (_string.compare(tipo, "GvS")) {
-            servico.tipo = TipoSecretariaEnum.Saude;
-            servico.secretaria = unicode"Saúde";
-
-            servico.nomeToken = "GovSaudeToken";
-            servico.simboloToken = "GvS";
-        } else if (_string.compare(tipo, "GvE")) {
-            servico.tipo = TipoSecretariaEnum.Educacao;
-            servico.secretaria = unicode"Educação";
-
-            servico.nomeToken = "GovEducacaoToken";
-            servico.simboloToken = "GvE";
-        }
-
-        adicionarServico(servico);
-    }
-
-    function adicionarServico(ServicoInfo memory servico) private {
         servico.solicitante = msg.sender;
         servico.executor = address(0);
         servico.data = block.timestamp * 1000;
-
-        require(
-            _agenteFederado.obterAgenteFederado(msg.sender).cadastrado,
-            unicode"Esta Conta não pode solicitar um serviço"
-        );
-
-        servico.agenteFederado = _agenteFederado.obterAgenteFederado(
-            msg.sender
-        );
+        servico.secretaria = secretaria;
+        servico.nomeToken = _govToken.name();
+        servico.simboloToken = _govToken.symbol();
 
         _listaServicos.push(servico);
-        _qtdServicos = _listaServicos.length;
+
+        _govToken.transferFrom(
+            secretaria.enderecoCarteira,
+            address(this),
+            valor
+        );
+
+        _agenteFederado.incluirLinhaExtrato(
+            secretaria.enderecoCarteira,
+            ExtratoInfo(
+                servico.data,
+                unicode"Reserva de Serviço",
+                valor,
+                "D",
+                address(this),
+                secretaria.enderecoCarteira,
+                _govToken.symbol()
+            )
+        );
 
         emit servicoAdicionado(servico);
     }
 
     function executarServico(uint256 id) public onlySupplier {
-        for (uint256 i = 0; i < _qtdServicos; i++) {
-            if (_listaServicos[i].id == id) {
-                require(
-                    _listaServicos[i].status == StatusServicoEnum.Disponivel,
-                    unicode"Este serviço não está mais disponível para execução."
-                );
+        uint256 indice = obterIndiceServico(id);
 
-                FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(
-                    msg.sender
-                );
+        require(
+            _listaServicos[indice].status == StatusServicoEnum.Disponivel,
+            unicode"Este serviço não está mais disponível para execução."
+        );
 
-                require(
-                    _string.compare(
-                        _listaServicos[i].simboloToken,
-                        fornecedor.secretaria
-                    ),
-                    unicode"Esta operação não pode ser executada pelo owner desta carteira."
-                );
+        FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(
+            msg.sender
+        );
 
-                _listaServicos[i].fornecedor = fornecedor;
-
-                _listaServicos[i].executor = msg.sender;
-                _listaServicos[i].disponivel = false;
-                _listaServicos[i].status = StatusServicoEnum.EmExecucao;
-
-                break;
-            }
-        }
+        _listaServicos[indice].fornecedor = fornecedor;
+        _listaServicos[indice].executor = msg.sender;
+        _listaServicos[indice].disponivel = false;
+        _listaServicos[indice].status = StatusServicoEnum.EmExecucao;
     }
 
     function concluirSolicitarPagamentoServico(uint256 id) public onlySupplier {
-        for (uint256 i = 0; i < _qtdServicos; i++) {
-            if (_listaServicos[i].id == id) {
-                require(
-                    _listaServicos[i].status == StatusServicoEnum.EmExecucao,
-                    unicode"Este serviço não está em execução e seu pagamento não pode ser solicitado."
-                );
+        uint256 indice = obterIndiceServico(id);
 
-                FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(
-                    msg.sender
-                );
+        require(
+            _listaServicos[indice].status == StatusServicoEnum.EmExecucao,
+            unicode"Este serviço não está em execução e seu pagamento não pode ser solicitado."
+        );
 
-                require(
-                    fornecedor.enderecoCarteira ==
-                        _listaServicos[i].fornecedor.enderecoCarteira,
-                    unicode"A Conclusão do Serviço e a Solicitação de Pagamento só podem ser realizada pelo executor do serviço."
-                );
+        FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(
+            msg.sender
+        );
 
-                require(
-                    _string.compare(
-                        _listaServicos[i].simboloToken,
-                        fornecedor.secretaria
-                    ),
-                    unicode"Esta operação não pode ser executada pelo owner desta carteira."
-                );
+        require(
+            fornecedor.enderecoCarteira ==
+                _listaServicos[indice].fornecedor.enderecoCarteira,
+            unicode"A Conclusão do Serviço e a Solicitação de Pagamento só podem ser realizada pelo executor do serviço."
+        );
 
-                _listaServicos[i].status = StatusServicoEnum
-                    .AguardandoPagamento;
-
-                break;
-            }
-        }
+        _listaServicos[indice].status = StatusServicoEnum.AguardandoPagamento;
     }
 
-    function liberarPagamentoServico(uint256 id) public onlyFederated {
-        for (uint256 i = 0; i < _qtdServicos; i++) {
-            if (_listaServicos[i].id == id) {
-                require(
-                    _listaServicos[i].status ==
-                        StatusServicoEnum.AguardandoPagamento,
-                    unicode"Este serviço não está aguardando pagamento."
-                );
+    function liberarPagamentoServico(uint256 id) public onlySecretary {
+        uint256 indice = obterIndiceServico(id);
 
-                AgenteFederadoInfo memory agenteFederado = _agenteFederado
-                    .obterAgenteFederado(msg.sender);
+        require(
+            _listaServicos[indice].status ==
+                StatusServicoEnum.AguardandoPagamento,
+            unicode"Este serviço não está aguardando pagamento."
+        );
 
-                require(
-                    agenteFederado.enderecoCarteira ==
-                        _listaServicos[i].agenteFederado.enderecoCarteira,
-                    unicode"Somente o solicitante do serviço pode liberar o pagamento."
-                );
+        SecretariaInfo memory secretaria = _agenteFederado.obterSecretaria(
+            msg.sender
+        );
 
-                _listaServicos[i].status = StatusServicoEnum.Finalizado;
+        require(
+            secretaria.enderecoCarteira == _listaServicos[indice].solicitante,
+            unicode"Somente o solicitante do serviço pode liberar o pagamento."
+        );
 
-                _govToken.approve(
-                    address(_contaLastro),
-                    _listaServicos[i].valor
-                );
+        _listaServicos[indice].status = StatusServicoEnum.Finalizado;
 
-                _contaLastro.solicitarRepasse(
-                    _listaServicos[i].executor,
-                    _listaServicos[i].data,
-                    _listaServicos[i].id,
-                    _listaServicos[i].valor
-                );
+        _govToken.approve(address(_contaLastro), _listaServicos[indice].valor);
 
-                break;
-            }
-        }
+        _contaLastro.solicitarRepasse(
+            _listaServicos[indice].executor,
+            _listaServicos[indice].data,
+            _listaServicos[indice].id,
+            _listaServicos[indice].valor
+        );
+    }
+
+    function obterIndiceServico(uint256 id) private pure returns (uint256) {
+        uint256 indice = id - 1;
+        return indice;
+    }
+
+    function obterServico(
+        uint256 id
+    ) private view returns (ServicoInfo memory) {
+        return _listaServicos[obterIndiceServico(id)];
     }
 }

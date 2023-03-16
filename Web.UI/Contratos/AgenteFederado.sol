@@ -45,20 +45,18 @@ contract AgenteFederado {
         _owners[owner] = isOwner;
     }
 
-    function cadastrarAgenteFederado(AgenteFederadoInfo memory agenteFederado)
-        public
-        onlyOwner
-    {
+    function cadastrarAgenteFederado(
+        AgenteFederadoInfo memory agenteFederado
+    ) public onlyOwner {
         agenteFederado.cadastrado = true;
         _agentesFederados[agenteFederado.enderecoCarteira] = agenteFederado;
         _enderecosAgentesFederados.push(agenteFederado.enderecoCarteira);
         _qtdAgentesFederados = _enderecosAgentesFederados.length;
     }
 
-    function cadastrarSecretaria(SecretariaInfo memory secretaria)
-        public
-        onlyFederated
-    {
+    function cadastrarSecretaria(
+        SecretariaInfo memory secretaria
+    ) public onlyFederated {
         secretaria.agenteFederado = msg.sender;
         secretaria.cadastrado = true;
         _secretarias[secretaria.enderecoCarteira] = secretaria;
@@ -98,43 +96,38 @@ contract AgenteFederado {
         return secretarias;
     }
 
-    function listarSecretariasAgenteFederado(address endereco)
-        public
-        view
-        returns (SecretariaInfo[] memory)
-    {
+    function listarSecretariasAgenteFederado(
+        address endereco
+    ) public view returns (SecretariaInfo[] memory) {
         return _secretariasAgenteFederado[endereco];
     }
 
-    function obterAgenteFederado(address endereco)
-        public
-        view
-        returns (AgenteFederadoInfo memory)
-    {
+    function obterAgenteFederado(
+        address endereco
+    ) public view returns (AgenteFederadoInfo memory) {
         return _agentesFederados[endereco];
     }
 
-    function obterSecretaria(address endereco)
-        public
-        view
-        returns (SecretariaInfo memory)
-    {
+    function obterSecretaria(
+        address endereco
+    ) public view returns (SecretariaInfo memory) {
         return _secretarias[endereco];
     }
 
-    function incluirLinhaExtrato(address endereco, ExtratoInfo memory extrato)
-        public
-        onlyOwner
-    {
-        require(_secretarias[endereco].cadastrado);
+    function incluirLinhaExtrato(
+        address endereco,
+        ExtratoInfo memory extrato
+    ) public onlyOwner {
+        require(
+            _secretarias[endereco].cadastrado,
+            "A carteira do extrato deve ser de uma secretaria."
+        );
         _extrato[endereco].push(extrato);
     }
 
-    function consultarExtrato(address endereco)
-        public
-        view
-        returns (ExtratoInfo[] memory)
-    {
+    function consultarExtrato(
+        address endereco
+    ) public view returns (ExtratoInfo[] memory) {
         return _extrato[endereco];
     }
 }

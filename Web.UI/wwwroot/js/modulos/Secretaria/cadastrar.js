@@ -21,6 +21,7 @@ $(document).ready(function () {
             () => {
                 $("#cadastrarSecretariaForm").trigger("reset");
                 mensagemSucesso($("#cadastrarSecretariaForm fieldset"), "Cadastro realizado.");
+                carregarAgenteFederado();
             },
             (msgErro) => {
                 mensagemErro($("#cadastrarSecretariaForm fieldset"), msgErro);

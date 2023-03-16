@@ -107,3 +107,23 @@ async function obterAgenteFederado(enderecoCarteira) {
 
     return agentesFederados;
 }
+
+async function setOwnerAgenteFederado(endereco, ehDono) {
+    var agenteFederado = await obterContrato(jsonPathAgenteFederado);
+
+    if (agenteFederado == null) {
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
+        return;
+    }
+
+    var conta = await obterContaWeb3();
+
+    agenteFederado.methods.setOwner(endereco, ehDono).send({ from: conta })
+        .on('receipt', (receipt) => {
+            alert('Dono setado.')
+        })
+        .on('error', (error) => {
+            console.log(error);
+            alert(error.message);
+        })
+}

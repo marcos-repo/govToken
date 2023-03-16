@@ -23,6 +23,7 @@ module.exports = async function (deployer) {
 
   await govTokenInstance.setMintOwner(ContaLastro.address);
   await agenteFederadoInstance.setOwner(ContaLastro.address, true);
+  await agenteFederadoInstance.setOwner(PainelServico.address, true);
   await painelServicoInstance.setContaLastro(ContaLastro.address);
   
   //await painelServicoInstance.setMintOwner(PainelServico.address);

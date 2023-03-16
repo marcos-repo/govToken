@@ -19,7 +19,10 @@ contract Fornecedor {
 
     //Modificadores
     modifier onlyOwner() {
-        require(_owners[msg.sender] == true);
+        require(
+            _owners[msg.sender] == true,
+            unicode"Somente os resposáveis pelo contrato do Fornecedor podem realizar essa operação."
+        );
         _;
     }
 
@@ -28,10 +31,9 @@ contract Fornecedor {
         _owners[owner] = isOwner;
     }
 
-    function cadastrarFornecedor(FornecedorInfo memory fornecedor)
-        public
-        onlyOwner
-    {
+    function cadastrarFornecedor(
+        FornecedorInfo memory fornecedor
+    ) public onlyOwner {
         fornecedor.cadastrado = true;
         _fornecedores[fornecedor.enderecoCarteira] = fornecedor;
         _enderecosFornecedores.push(fornecedor.enderecoCarteira);
@@ -55,27 +57,26 @@ contract Fornecedor {
         return fornecedores;
     }
 
-    function obterFornecedor(address endereco)
-        public
-        view
-        returns (FornecedorInfo memory)
-    {
+    function obterFornecedor(
+        address endereco
+    ) public view returns (FornecedorInfo memory) {
         return _fornecedores[endereco];
     }
 
-    function incluirLinhaExtrato(address endereco, ExtratoInfo memory extrato)
-        public
-        onlyOwner
-    {
-        require(_fornecedores[endereco].cadastrado);
+    function incluirLinhaExtrato(
+        address endereco,
+        ExtratoInfo memory extrato
+    ) public onlyOwner {
+        require(
+            _fornecedores[endereco].cadastrado,
+            "A carteira do extrato deve ser de um fornecedor."
+        );
         _extrato[endereco].push(extrato);
     }
 
-    function consultarExtrato(address endereco)
-        public
-        view
-        returns (ExtratoInfo[] memory)
-    {
+    function consultarExtrato(
+        address endereco
+    ) public view returns (ExtratoInfo[] memory) {
         return _extrato[endereco];
     }
 }

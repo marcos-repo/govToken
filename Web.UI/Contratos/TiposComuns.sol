@@ -31,7 +31,6 @@ struct FornecedorInfo {
     uint256 dataCadastro;
     string uf;
     string nome;
-    string secretaria;
     address enderecoCarteira;
     bool cadastrado;
 }
@@ -42,24 +41,17 @@ struct ServicoInfo {
     string descricaoResumida;
     string descricao;
     uint256 valor;
-    TipoSecretariaEnum tipo;
     address solicitante;
     address executor;
     string uf;
-    string secretaria;
     string nomeToken;
     string simboloToken;
     bool disponivel;
     StatusServicoEnum status;
-    AgenteFederadoInfo agenteFederado;
+    SecretariaInfo secretaria;
     FornecedorInfo fornecedor;
     bool visaoFornecedor;
     bool visaoAgenteFederado;
-}
-
-enum TipoSecretariaEnum {
-    Saude,
-    Educacao
 }
 
 enum StatusServicoEnum {
