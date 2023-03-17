@@ -19,15 +19,6 @@
          carregarPainelServicos();
      });
 
-    // bindEventoDepositoContaLastroRealizado(
-    //     (event) => {
-    //         console.log(event);
-    //         carregarPainelServicos();
-    //     },
-    //     (error) => {
-    //         console.log(error.message);
-    //     }
-    // );
 })();
 
 var fornecedor = '';
@@ -244,16 +235,21 @@ function bindEventos() {
         await concluir(id);
     });
 
-    $(".btn-success").bind("click", async function () {
-        var id = $(this).data("id");
-        await liberarPagamento(id);
-    });
+    if (visaoAgenteFederado) {
+        $(".btn-success").bind("click", async function () {
+            var id = $(this).data("id");
+            await liberarPagamento(id);
+        });
+    }
 }
 
 function configuraBotoes() {
     bindEventos();
 
     if (!visaoAgenteFederado) {
+
+        console.log('visaoAgenteFederado -> ', visaoAgenteFederado);
+
         $(".btn-success").unbind("click");
         $(".btn-success").removeClass("btn");
         $(".btn-success").addClass("btn-no-click");
