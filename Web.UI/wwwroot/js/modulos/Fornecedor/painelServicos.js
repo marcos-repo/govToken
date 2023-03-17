@@ -229,6 +229,11 @@ function processando(id, status) {
 }
 
 function bindEventos() {
+
+    $(".btn-executar").unbind("click");
+    $(".btn-concluir").unbind("click");
+    $(".btn-success").unbind("click");
+
     $(".btn-executar").bind("click", async function () {
         var id = $(this).data("id");
         await executar(id);
