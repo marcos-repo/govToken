@@ -19,10 +19,8 @@ async function cadastrarAgenteFederado(uf, descricao, enderecoCarteira, receiptF
         return;
     }
 
-    var data = toBlockChainDate(new Date());
-
     agenteFederadoInfo = {
-        dataCadastro: data,
+        dataCadastro: 0,
         uf: uf,
         descricao: descricao,
         enderecoCarteira: enderecoCarteira,
@@ -51,16 +49,14 @@ async function cadastrarSecretaria(descricao, enderecoCarteira, receiptFunc, err
         return;
     }
 
-    var data = toBlockChainDate(new Date());
-
     var conta = await obterContaWeb3();
 
     secretariaInfo = {
         descricao: descricao,
         enderecoCarteira: enderecoCarteira,
-        agenteFederado: conta,
+        enderecoAgenteFederado: conta,
         cadastrado: true,
-        dataCadastro: data
+        dataCadastro: 0
     };
 
     agenteFederado.methods.cadastrarSecretaria(secretariaInfo).send({ from: conta })
@@ -81,9 +77,7 @@ async function listarAgentesFederados() {
     if (agenteFederado == null)
         return;
 
-    agentesFederados = await agenteFederado.methods.listarAgentesFederados().call();
-
-    return agentesFederados;
+    return await agenteFederado.methods.listarAgentesFederados().call();
 }
 
 async function listarSecretariasAgenteFederado(enderecoAgenteFederado) {
@@ -92,9 +86,7 @@ async function listarSecretariasAgenteFederado(enderecoAgenteFederado) {
     if (agenteFederado == null)
         return;
 
-    agentesFederados = await agenteFederado.methods.listarSecretariasAgenteFederado(enderecoAgenteFederado).call();
-
-    return agentesFederados;
+    return await agenteFederado.methods.listarSecretariasAgenteFederado(enderecoAgenteFederado).call();
 }
 
 async function obterAgenteFederado(enderecoCarteira) {
@@ -103,9 +95,16 @@ async function obterAgenteFederado(enderecoCarteira) {
     if (agenteFederado == null)
         return;
 
-    agentesFederados = await agenteFederado.methods.obterAgenteFederado(enderecoCarteira).call();
+    return await agenteFederado.methods.obterAgenteFederado(enderecoCarteira).call();
+}
 
-    return agentesFederados;
+async function obterSecretaria(enderecoCarteira) {
+    var agenteFederado = await obterContrato(jsonPathAgenteFederado);
+
+    if (agenteFederado == null)
+        return;
+
+    return await agenteFederado.methods.obterSecretaria(enderecoCarteira).call();
 }
 
 async function setOwnerAgenteFederado(endereco, ehDono) {

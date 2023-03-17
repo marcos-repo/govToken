@@ -69,7 +69,9 @@ contract ContaLastro {
         return _extrato;
     }
 
-    function realizarDeposito(uint256 data, uint256 valor) public onlyOwner {
+    function realizarDeposito(uint256 valor) public onlyOwner {
+        uint256 data = block.timestamp * 1000;
+
         _govToken.mint(address(this), valor);
 
         _extrato.push(
@@ -101,13 +103,14 @@ contract ContaLastro {
 
     function transferirToken(
         address enderecoSecretaria,
-        uint256 data,
         uint256 valor
     ) public onlyOwner {
         require(
             _agenteFederado.obterSecretaria(enderecoSecretaria).cadastrado,
             unicode"O endereço informado deve ser o de uma secretaria."
         );
+
+        uint256 data = block.timestamp * 1000;
 
         _govToken.approve(address(this), valor);
         _govToken.transfer(enderecoSecretaria, valor);
@@ -148,9 +151,10 @@ contract ContaLastro {
     function solicitarRepasse(
         address enderecoFornecedor,
         uint256 idServico,
-        uint256 data,
         uint256 valor
     ) public onlyServicePanel {
+        uint256 data = block.timestamp * 1000;
+
         _govToken.transferFrom(address(_painelServico), address(this), valor);
 
         _govToken.approve(address(this), valor);

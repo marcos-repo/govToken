@@ -3,10 +3,9 @@ $(document).ready(function () {
         removerMensagemSucessoErro();
 
         var uf = $("#ddlUf").val();
-        var enderecoCarteira = $("#enderecoCarteira").val();
         var nome = $("#nome").val();
 
-        cadastrarFornecedor(uf, nome, enderecoCarteira,
+        cadastrarFornecedor(uf, nome,
             () => {
                 $("#cadastrarFornecedorForm").trigger("reset");
                 mensagemSucesso($("#cadastrarFornecedorForm fieldset"), "Cadastro realizado.");

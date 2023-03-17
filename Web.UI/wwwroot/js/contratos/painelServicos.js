@@ -26,7 +26,6 @@ async function adicionarServico(
         return;
     }
     var valorBlockchain = toBlockChainDecimal(valor);
-    var data = toBlockChainDate(new Date());
 
     var conta = await obterContaWeb3();
 

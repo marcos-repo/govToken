@@ -11,7 +11,7 @@ async function consultarExtratoFornecedor(endereco) {
     return extrato;
 }
 
-async function cadastrarFornecedor(uf, nome, enderecoCarteira, receiptFunc, errorFunc) {
+async function cadastrarFornecedor(uf, nome, receiptFunc, errorFunc) {
     var fornecedor = await obterContrato(jsonPathFornecedor);
 
     if (fornecedor == null) {
@@ -19,16 +19,14 @@ async function cadastrarFornecedor(uf, nome, enderecoCarteira, receiptFunc, erro
         return;
     }    
 
-    var data = toBlockChainDate(new Date());
+    var conta = await obterContaWeb3();
 
     fornecedorInfo = {
-        dataCadastro: data,
+        dataCadastro: 0,
         uf: uf,
         nome: nome,
-        enderecoCarteira: enderecoCarteira,
-    }
-
-    var conta = await obterContaWeb3();
+        enderecoCarteira: conta,
+    }    
 
     fornecedor.methods.cadastrarFornecedor(fornecedorInfo).send({ from: conta })
         .on('receipt', (receipt) => {

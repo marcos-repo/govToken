@@ -48,6 +48,7 @@ contract AgenteFederado {
     function cadastrarAgenteFederado(
         AgenteFederadoInfo memory agenteFederado
     ) public onlyOwner {
+        agenteFederado.dataCadastro = block.timestamp * 1000;
         agenteFederado.cadastrado = true;
         _agentesFederados[agenteFederado.enderecoCarteira] = agenteFederado;
         _enderecosAgentesFederados.push(agenteFederado.enderecoCarteira);
@@ -57,7 +58,8 @@ contract AgenteFederado {
     function cadastrarSecretaria(
         SecretariaInfo memory secretaria
     ) public onlyFederated {
-        secretaria.agenteFederado = msg.sender;
+        secretaria.dataCadastro = block.timestamp * 1000;
+        secretaria.enderecoAgenteFederado = msg.sender;
         secretaria.cadastrado = true;
         _secretarias[secretaria.enderecoCarteira] = secretaria;
         _enderecosSecretarias.push(secretaria.enderecoCarteira);

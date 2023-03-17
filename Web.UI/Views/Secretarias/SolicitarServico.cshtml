@@ -3,6 +3,7 @@
 }
 
 @section scripts {
+    <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/contratos/painelServicos.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/contratos/govToken.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/modulos/secretaria/solicitarServico.js?v=@(JavascriptHelper.Versao)"></script>
@@ -36,6 +37,26 @@
                             <div class="smart-form">
                                 <form id="solicitar-servico" name="solicitar-servico">
                                     <fieldset>
+                                        <section>
+                                            <div class="row">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Agente Federado:</label>
+                                                    <label class="input">
+                                                        <input id="ttbAgenteFederado" type="text" readonly />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <section>
+                                            <div class="row">
+                                                <div class="col col-12 col-sm-12">
+                                                    <label class="label">Secretaria:</label>
+                                                    <label class="input">
+                                                        <input id="ttbSecretaria" type="text" readonly />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </section>
                                          <section>
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">

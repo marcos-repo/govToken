@@ -20,11 +20,10 @@ async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
     }
 
     valor = toBlockChainDecimal(valor);
-    var data = toBlockChainDate(new Date());
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.realizarDeposito(data, valor).send({ from: conta })
+    contaLatro.methods.realizarDeposito(valor).send({ from: conta })
         .on('receipt', (receipt) => {
             if (receiptFunc != null)
                 receiptFunc(receipt);
@@ -45,11 +44,10 @@ async function transferirTokenContaLastro(enderecoSecretaria, valor, receiptFunc
     }
 
     valor = toBlockChainDecimal(valor);
-    var data = toBlockChainDate(new Date());
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.transferirToken(enderecoSecretaria, data, valor).send({ from: conta })
+    contaLatro.methods.transferirToken(enderecoSecretaria, valor).send({ from: conta })
         .on('receipt', (receipt) => {
             if (receiptFunc != null)
                 receiptFunc(receipt);

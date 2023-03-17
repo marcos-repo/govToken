@@ -9,9 +9,15 @@
         carregarPainelServicos();
     });
 
-    // bindEventoRedeAlterada(() => {
-    //     carregarPainelServicos();
-    // });
+    bindEventoRedeAlterada(() => {
+        removerMensagemSucessoErro();
+
+        $("#servicos-disponiveis").html("");
+        $("#servicos-em-execucao").html("");
+        $("#servicos-aguardando-pagamento").html("");
+
+         carregarPainelServicos();
+     });
 
     // bindEventoDepositoContaLastroRealizado(
     //     (event) => {
@@ -94,7 +100,7 @@ async function html(servico) {
     var valor = fromBlockChainDecimal(servico.valor);
     var simboloToken = servico.simboloToken;
 
-    var agenteFederado = await obterAgenteFederado(servico.secretaria.agenteFederado);
+    var agenteFederado = await obterAgenteFederado(servico.secretaria.enderecoAgenteFederado);
 
     var uf = agenteFederado.uf;
     var descricaoAgenteFederado = agenteFederado.descricao;

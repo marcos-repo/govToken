@@ -31,9 +31,14 @@ contract Fornecedor {
         _owners[owner] = isOwner;
     }
 
-    function cadastrarFornecedor(
-        FornecedorInfo memory fornecedor
-    ) public onlyOwner {
+    function cadastrarFornecedor(FornecedorInfo memory fornecedor) public {
+        require(
+            !_fornecedores[msg.sender].cadastrado,
+            unicode"O fornecedor já se encontra cadastrado."
+        );
+
+        fornecedor.dataCadastro = block.timestamp * 1000;
+        fornecedor.enderecoCarteira = msg.sender;
         fornecedor.cadastrado = true;
         _fornecedores[fornecedor.enderecoCarteira] = fornecedor;
         _enderecosFornecedores.push(fornecedor.enderecoCarteira);

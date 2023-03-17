@@ -248,7 +248,6 @@ contract PainelServico {
 
         _contaLastro.solicitarRepasse(
             _listaServicos[indice].executor,
-            _listaServicos[indice].data,
             _listaServicos[indice].id,
             _listaServicos[indice].valor
         );

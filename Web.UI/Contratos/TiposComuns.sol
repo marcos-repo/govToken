@@ -21,7 +21,7 @@ struct AgenteFederadoInfo {
 
 struct SecretariaInfo {
     uint256 dataCadastro;
-    address agenteFederado;
+    address enderecoAgenteFederado;
     string descricao;
     address enderecoCarteira;
     bool cadastrado;

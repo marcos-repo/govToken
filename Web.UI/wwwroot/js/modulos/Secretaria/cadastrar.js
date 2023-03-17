@@ -1,9 +1,11 @@
 (async function carregarEventos() {
     bindEventoRedeAlterada(() => {
+        removerMensagemSucessoErro();
         carregarAgenteFederado();
     });
 
     bindEventoContaAlterada(() => {
+        removerMensagemSucessoErro();
         carregarAgenteFederado();
     })
 })();
@@ -41,8 +43,6 @@ $(document).ready(function () {
 });
 
 async function carregarAgenteFederado() {
-    removerMensagemSucessoErro();
-
     var conta = await obterContaWeb3();
 
     var agenteFederado = await obterAgenteFederado(conta);
