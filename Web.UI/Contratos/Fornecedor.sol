@@ -84,4 +84,48 @@ contract Fornecedor {
     ) public view returns (ExtratoInfo[] memory) {
         return _extrato[endereco];
     }
+
+    function obterQuantidadeSemAprovacao() private view returns(uint quantidade) {
+
+        for (uint256 i = 0; i < _qtdFornecedores; i++) {
+            address endereco = _enderecosFornecedores[i];
+            if(!_fornecedores[endereco].aprovado)
+            quantidade++;
+        }
+    }
+
+    function listarFornecedoresAprovacaoPendente()
+        public
+        view
+        onlyOwner
+        returns (FornecedorInfo[] memory)
+    {
+        
+        uint quantidadePendente = obterQuantidadeSemAprovacao();
+        
+        FornecedorInfo[] memory fornecedores = new FornecedorInfo[](
+            quantidadePendente
+        );
+
+        for (uint256 i = 0; i < _qtdFornecedores; i++) {
+            address endereco = _enderecosFornecedores[i];
+
+            if(!_fornecedores[endereco].aprovado)
+                fornecedores[i] = _fornecedores[endereco];
+        }
+
+        return fornecedores;
+    }
+
+    function aprovarFornecedor(address enderecoCarteira) public onlyOwner{
+        require(
+            !_fornecedores[msg.sender].aprovado,
+            unicode"O cadastro do fornecedor já foi aprovado anteriormente."
+        );
+
+        _fornecedores[enderecoCarteira].dataAprovacao = block.timestamp * 1000;
+        _fornecedores[enderecoCarteira].aprovado = true;
+    }
+
+    
 }

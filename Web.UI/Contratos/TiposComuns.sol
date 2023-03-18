@@ -33,6 +33,8 @@ struct FornecedorInfo {
     string nome;
     address enderecoCarteira;
     bool cadastrado;
+    bool aprovado;
+    uint256 dataAprovacao;
 }
 
 struct ServicoInfo {
