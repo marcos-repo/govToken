@@ -17,12 +17,14 @@ $(document).ready(function () {
 });
 
 async function carregarGridExtrato(endereco) {
-    $("#tblExtrato tbody").html("");
-
+    
     if (endereco == null || endereco == '')
         return;
 
+    $("#tblExtrato tbody").html(loadingGrid);
     var extrato = await consultarExtratoAgenteFederado(endereco);
+
+    $("#tblExtrato tbody").html("");
 
     for (var i in extrato) {
         var tr = $("<tr class='data-item'>");

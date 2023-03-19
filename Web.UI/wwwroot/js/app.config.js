@@ -45,3 +45,5 @@ voice_localStorage = true;
 var versaoJavascriptGlobal = "0.0.0.1";
  
 var loading = "<div style='display: block; text-align:center'><i class='fa fa-circle-o-notch fa-spin''></i> Carregando...<div>";
+
+var loadingGrid = "<tr><td colspan='10' style='background-color:#FFF;'>" + loading + "</td></tr>";

@@ -23,6 +23,7 @@ $(document).ready(function () {
 });
 
 async function carregarGridExtrato() {
+    $("#mytable tbody").html(loadingGrid);
     var extrato = await consultarExtratoContaLastro();
     $("#mytable tbody").html("");
 
