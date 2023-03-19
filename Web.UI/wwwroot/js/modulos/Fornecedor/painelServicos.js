@@ -29,13 +29,12 @@ $(document).ready(function () {
 
 async function carregarPainelServicos() {
     var conta = await obterContaWeb3();
-    console.log('conta -> ', conta);
 
+    loadingServicos();
+    
     fornecedor = await obterFornecedor(conta);
-    console.log('fornecedor -> ', fornecedor);
 
     var servicos = await listarServicos();
-    console.log(servicos);
 
     var servicosDisponiveis = servicos.filter(function (s) {
         return s.status == "0";
@@ -53,33 +52,51 @@ async function carregarPainelServicos() {
         return s.status == "3";
     });
 
-    console.log('servicosDisponiveis -> ', servicosDisponiveis);
-    console.log('servicosEmExecucao -> ', servicosEmExecucao);
-    console.log('servicosAguardandoPagamento -> ', servicosAguardandoPagamento);
-    console.log('servicosFinalizados -> ', servicosFinalizados);
+    var msg = "<div style='display: block; text-align:center'>Nenhum Serviço encontrado</div>";
 
     var painel = $("#servicos-disponiveis");
     painel.html("");
-
-    for (var i in servicosDisponiveis) {
-        painel.append(await html(servicosDisponiveis[i]));
+    if (servicosDisponiveis.length > 0) {
+        for (var i in servicosDisponiveis) {
+            painel.append(await html(servicosDisponiveis[i]));
+        }
     }
+    else
+        painel.html(msg);
 
     painel = $("#servicos-em-execucao");
     painel.html("");
-    for (var i in servicosEmExecucao) {
-        painel.append(await html(servicosEmExecucao[i]));
+    if (servicosEmExecucao.length > 0) {
+        for (var i in servicosEmExecucao) {
+            painel.append(await html(servicosEmExecucao[i]));
+        }
     }
+    else
+        painel.html(msg);
 
     painel = $("#servicos-aguardando-pagamento");
     painel.html("");
-    for (var i in servicosAguardandoPagamento) {
-        painel.append(await html(servicosAguardandoPagamento[i]));
+    if (servicosAguardandoPagamento.length > 0) {
+        for (var i in servicosAguardandoPagamento) {
+            painel.append(await html(servicosAguardandoPagamento[i]));
+        }
     }
-
+    else
+        painel.html(msg);
+    
     configuraBotoes();
 }
 
+function loadingServicos() {
+    var painel = $("#servicos-disponiveis");
+    painel.html(loading);
+
+    painel = $("#servicos-em-execucao");
+    painel.html(loading);
+
+    painel = $("#servicos-aguardando-pagamento");
+    painel.html(loading);
+}
 
 var visaoAgenteFederado = false;
 async function html(servico) {
@@ -247,8 +264,6 @@ function configuraBotoes() {
     bindEventos();
 
     if (!visaoAgenteFederado) {
-
-        console.log('visaoAgenteFederado -> ', visaoAgenteFederado);
 
         $(".btn-success").unbind("click");
         $(".btn-success").removeClass("btn");

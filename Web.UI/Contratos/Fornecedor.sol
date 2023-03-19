@@ -6,6 +6,7 @@ import "./TiposComuns.sol";
 contract Fornecedor {
     //Propriedades
     uint256 private _qtdFornecedores;
+    uint256 private _qtdFornecedoresPendentesAprovacao;
     address[] private _enderecosFornecedores;
     mapping(address => FornecedorInfo) private _fornecedores;
 
@@ -21,7 +22,7 @@ contract Fornecedor {
     modifier onlyOwner() {
         require(
             _owners[msg.sender] == true,
-            unicode"Somente os resposáveis pelo contrato do Fornecedor podem realizar essa operação."
+            unicode"Somente os responsáveis pelo contrato do Fornecedor podem realizar essa operação."
         );
         _;
     }
@@ -40,9 +41,13 @@ contract Fornecedor {
         fornecedor.dataCadastro = block.timestamp * 1000;
         fornecedor.enderecoCarteira = msg.sender;
         fornecedor.cadastrado = true;
+        fornecedor.dataAprovacao = 0;
+
         _fornecedores[fornecedor.enderecoCarteira] = fornecedor;
         _enderecosFornecedores.push(fornecedor.enderecoCarteira);
         _qtdFornecedores = _enderecosFornecedores.length;
+
+        _qtdFornecedoresPendentesAprovacao++;
     }
 
     function listarFornecedores()
@@ -85,33 +90,24 @@ contract Fornecedor {
         return _extrato[endereco];
     }
 
-    function obterQuantidadeSemAprovacao() private view returns(uint quantidade) {
-
-        for (uint256 i = 0; i < _qtdFornecedores; i++) {
-            address endereco = _enderecosFornecedores[i];
-            if(!_fornecedores[endereco].aprovado)
-            quantidade++;
-        }
-    }
-
     function listarFornecedoresAprovacaoPendente()
         public
         view
         onlyOwner
         returns (FornecedorInfo[] memory)
     {
-        
-        uint quantidadePendente = obterQuantidadeSemAprovacao();
-        
         FornecedorInfo[] memory fornecedores = new FornecedorInfo[](
-            quantidadePendente
+            _qtdFornecedoresPendentesAprovacao
         );
 
+        uint256 j = 0;
         for (uint256 i = 0; i < _qtdFornecedores; i++) {
             address endereco = _enderecosFornecedores[i];
 
-            if(!_fornecedores[endereco].aprovado)
-                fornecedores[i] = _fornecedores[endereco];
+            if(!_fornecedores[endereco].aprovado){
+                fornecedores[j] = _fornecedores[endereco];
+                j++;
+            }
         }
 
         return fornecedores;
@@ -125,7 +121,7 @@ contract Fornecedor {
 
         _fornecedores[enderecoCarteira].dataAprovacao = block.timestamp * 1000;
         _fornecedores[enderecoCarteira].aprovado = true;
-    }
 
-    
+        _qtdFornecedoresPendentesAprovacao = _qtdFornecedoresPendentesAprovacao - 1;
+    }
 }

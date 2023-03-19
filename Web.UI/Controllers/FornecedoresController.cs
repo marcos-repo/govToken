@@ -19,5 +19,10 @@ namespace Web.UI.Controllers
         {
             return View();
         }
+
+        public ActionResult AprovarCadastro()
+        {
+            return View();
+        }
     }
 }

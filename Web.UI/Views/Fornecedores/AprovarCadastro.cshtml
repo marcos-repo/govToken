@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+    <script src="~/js/contratos/fornecedor.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/modulos/fornecedor/aprovarCadastro.js?v=@(JavascriptHelper.Versao)"></script>
+}
+
+<div id="ribbon">
+    <ol class="breadcrumb">
+        <li>Início</li>
+        <li>Fornecedor</li>
+        <li>Aprovar Cadastro</li>
+    </ol>
+</div>
+
+<div id="content">
+    <section id="widget-grid" class="">
+
+        <div class="row">
+            <article class="col-sm-12 col-md-12 col-lg-6" id="extrato">
+
+                <div class="jarviswidget" id="wid-id-extrato" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false"
+                     data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-collapsed="false"
+                     data-widget-sortable="false">
+                    <span id="msg"></span>
+                    <header>
+                        <span class="widget-icon"><i class="fa fa-calendar"></i></span>
+                        <h2>Aprovar Cadastro</h2>
+                    </header>
+
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div class="smart-form table-responsive" style="padding: 15px; width: auto">
+                                <div>
+                                    <table id="mytable" class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" style="border-collapse:collapse;">
+                                        <thead>
+                                            <tr class="header" style="height:5px !important;">
+                                                <th class="text-center" scope="col">Nome</th>
+                                                <th class="text-center" scope="col">Data Cadastro</th>
+                                                <th class="text-center" scope="col">#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </section>
+</div>
+
+

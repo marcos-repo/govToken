@@ -197,6 +197,11 @@ contract PainelServico {
             msg.sender
         );
 
+        require(
+            fornecedor.aprovado,
+            unicode"Apenas Fornecedores com cadastro aprovado podem executar um serviço."
+        );
+
         _listaServicos[indice].fornecedor = fornecedor;
         _listaServicos[indice].executor = msg.sender;
         _listaServicos[indice].disponivel = false;
