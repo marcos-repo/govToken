@@ -20,6 +20,7 @@ function inicializarTela() {
 }
 
 async function carregarFornecedoresSemAprovacao() {
+    $("#mytable tbody").html(loadingGrid);
     var fornecedores = await listarFornecedoresSemAprovacao();
     $("#mytable tbody").html("");
 
