@@ -154,7 +154,7 @@ async function html(servico) {
         '   </div>' +
         '   <div class="panel-body no-padding text-align-center">' +
         '       <div class="the-price">' +
-        '           <h1 title="' + descricaoResumida + '">' + descricaoResumida.substr(0, 25) + '</h1>' +
+        '           <h1 title="' + descricaoResumida + '">' + descricaoResumida.substr(0, 30) + '</h1>' +
         '           <small>' + descricaoAgenteFederado + ' - ' + uf + '</small><br />' +
         '           <small>' + secretaria + '</small>' +
         '           <h6>' + simboloToken + '$ ' + formatarDecimalMilhar(valor, 2) + '</h6>' +
@@ -173,11 +173,10 @@ async function executar(id) {
     removerMensagemSucessoErro();
     processando(id, true);
     await executarServico(id,
-        async () => {
-            await carregarPainelServicos();
+        () => {
+            carregarPainelServicos();
             processando(id, false);
             mensagemSucesso($("#msg"), "Serviço liberado para execução com sucesso.");
-
         },
         (msgErro) => {
             processando(id, false);
@@ -189,8 +188,8 @@ async function concluir(id) {
     removerMensagemSucessoErro();
     processando(id, true);
     await concluirServico(id,
-        async () => {
-            await carregarPainelServicos();
+        () => {
+            carregarPainelServicos();
             processando(id, false);
             mensagemSucesso($("#msg"), "Conclusão e Solicitação de Pagamento realizadas com sucesso.");
         },
@@ -204,8 +203,8 @@ async function liberarPagamento(id) {
     removerMensagemSucessoErro();
     processando(id, true);
     await liberarPagamentoServico(id,
-        async () => {
-            await carregarPainelServicos();
+        () => {
+            carregarPainelServicos();
             processando(id, false);
             mensagemSucesso($("#msg"), "Pagamento liberado com sucesso.");            
         },
@@ -270,7 +269,7 @@ function configuraBotoes() {
         $(".btn-success").addClass("btn-no-click");
     }
 
-    $(".btn-success").html('<i class="fa fa-dollar"></i> ' + (visaoAgenteFederado ? 'Liberar' : 'Aguardando ') + 'Pagamento');
+    $(".btn-success").html('<i class="fa fa-dollar"></i> ' + (visaoAgenteFederado ? 'Liberar' : 'Aguardando ') + ' Pagamento');
     $(".btn-success").css("background-color", "#71843f");
 }
 

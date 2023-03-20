@@ -5,21 +5,7 @@ $(document).ready(function () {
     });
 
     $("#transferenciaForm").submit(function () {
-        removerMensagemSucessoErro();
-
-        var enderecoCarteira = $("#ddlSecretaria").val();
-        var valor = $("#valor").val();
-
-        transferirTokenContaLastro(enderecoCarteira, valor,
-            () => {
-                $("#transferenciaForm").trigger("reset");
-                mensagemSucesso($("#transferenciaForm fieldset"), "Transferência realizada.");
-            },
-            (msgErro) => {
-                mensagemErro($("#transferenciaForm fieldset"), msgErro);
-            }
-        );
-
+        realizarTransferenciaContaLastro();
         return false;
     });
 
@@ -38,6 +24,34 @@ $(document).ready(function () {
 
     carregarDropdownAgenteFederado();
 });
+
+async function realizarTransferenciaContaLastro() {
+    removerMensagemSucessoErro();
+
+    var enderecoCarteira = $("#ddlSecretaria").val();
+    var valor = $("#valor").val();
+
+    var saldo = await obterSaldoGovToken(await obterEnderecoContaLastro());
+
+    if (saldo < valor) {
+        mensagemErro($("#transferenciaForm fieldset"), "Saldo insuficiente para a transferência.");
+        return;
+    }
+
+    adicionarLoadingBotao($("#btn-salvar"), true);
+
+    transferirTokenContaLastro(enderecoCarteira, valor,
+        () => {
+            $("#transferenciaForm").trigger("reset");
+            mensagemSucesso($("#transferenciaForm fieldset"), "Transferência realizada.");
+            adicionarLoadingBotao($("#btn-salvar"), false);
+        },
+        (msgErro) => {
+            mensagemErro($("#transferenciaForm fieldset"), msgErro);
+            adicionarLoadingBotao($("#btn-salvar"), false);
+        }
+    );
+}
 
 async function carregarDropdownAgenteFederado() {
     $("#ddlAgenteFederado option[data-consulta]").remove();

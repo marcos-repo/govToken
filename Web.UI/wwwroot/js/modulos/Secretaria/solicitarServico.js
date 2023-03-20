@@ -15,28 +15,42 @@ $(document).ready(function () {
     carregarAgenteFederadoSecretaria();
 
     $("#solicitar-servico").submit(function (e) {
-        removerMensagemSucessoErro();
-
-        var descricaoResumida = $("#descricao-resumida").val();
-        var descricao = $("#descricao").val();
-        var valor = $("#valor").val();
-
-        adicionarServico(descricaoResumida,
-            descricao,
-            valor,
-            () => {
-                $("#solicitar-servico").trigger("reset");
-                mensagemSucesso($("#solicitar-servico fieldset"), "Serviço solicitado com sucesso.");
-                carregarAgenteFederadoSecretaria();
-            },
-            (msgErro) => {
-                mensagemErro($("#solicitar-servico fieldset"), msgErro);
-            }
-        );
-
+        solicitarServicoSecretaria();
         return false;
     });
 });
+
+async function solicitarServicoSecretaria() {
+    removerMensagemSucessoErro();
+
+    var descricaoResumida = $("#descricao-resumida").val();
+    var descricao = $("#descricao").val();
+    var valor = $("#valor").val();
+
+    var saldo = await obterSaldoGovToken(await obterContaWeb3());
+
+    if (saldo < valor) {
+        mensagemErro($("#solicitar-servico fieldset"), "Saldo insuficiente para a solicitação de serviço.");
+        return;
+    }
+
+    adicionarLoadingBotao($("#btn-salvar"), true);
+
+    adicionarServico(descricaoResumida,
+        descricao,
+        valor,
+        () => {
+            $("#solicitar-servico").trigger("reset");
+            mensagemSucesso($("#solicitar-servico fieldset"), "Serviço solicitado com sucesso.");
+            carregarAgenteFederadoSecretaria();
+            adicionarLoadingBotao($("#btn-salvar"), false);
+        },
+        (msgErro) => {
+            mensagemErro($("#solicitar-servico fieldset"), msgErro);
+            adicionarLoadingBotao($("#btn-salvar"), false);
+        }
+    );
+}
 
 async function carregarAgenteFederadoSecretaria() {
     var conta = await obterContaWeb3();

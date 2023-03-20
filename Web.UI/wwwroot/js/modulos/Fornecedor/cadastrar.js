@@ -5,13 +5,17 @@ $(document).ready(function () {
         var uf = $("#ddlUf").val();
         var nome = $("#nome").val();
 
+        adicionarLoadingBotao($("#btn-salvar"), true);
+
         cadastrarFornecedor(uf, nome,
             () => {
                 $("#cadastrarFornecedorForm").trigger("reset");
                 mensagemSucesso($("#cadastrarFornecedorForm fieldset"), "Cadastro realizado.");
+                adicionarLoadingBotao($("#btn-salvar"), false);
             },
             (msgErro) => {
                 mensagemErro($("#cadastrarFornecedorForm fieldset"), msgErro);
+                adicionarLoadingBotao($("#btn-salvar"), false);
             }
         );
 

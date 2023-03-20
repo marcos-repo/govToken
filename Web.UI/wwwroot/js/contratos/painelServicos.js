@@ -41,7 +41,6 @@ async function adicionarServico(
                     errorFunc(error.message);
             })
     }, (msgErro) => {
-        console.log(error);
         if (errorFunc != null)
             errorFunc(msgErro);
     });    

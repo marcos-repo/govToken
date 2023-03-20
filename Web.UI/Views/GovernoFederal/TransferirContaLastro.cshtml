@@ -3,6 +3,7 @@
 }
 
 @section scripts {
+    <script src="~/js/contratos/govToken.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/contratos/contalastro.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/modulos/governofederal/transferirContaLastro.js?v=@(JavascriptHelper.Versao)"></script>
@@ -64,7 +65,9 @@
 
                                     </fieldset>
                                     <footer style="margin-top: 20px;">
-                                        <input type="submit" name="btn-salvar" value="Transferir" id="btn-salvar" class="btn btn-primary" />
+                                        <button type="submit" name="btn-salvar" id="btn-salvar" class="btn btn-primary">
+                                            Transferir
+                                        </button>
 
                                         <button type="button" class="btn btn-default" onclick="window.location='/';">
                                             Cancelar

@@ -39,7 +39,7 @@
                                             <div class="row">
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Estado:</label>
-                                                    <select class="form-control" id="ddlUf" name="uf">
+                                                    <select class="form-control" id="ddlUf" name="uf" required>
                                                             <option value="">Selecione</option>
                                                             <option value="AC">Acre</option>
                                                             <option value="AL">Alagoas</option>
@@ -73,7 +73,7 @@
                                                 <div class="col col-12 col-sm-12">
                                                     <label class="label">Nome:</label>
                                                     <label class="input">
-                                                        <input name="nome" type="text" id="nome" />
+                                                        <input name="nome" type="text" id="nome" required/>
                                                     </label>
                                                 </div>
 
@@ -82,7 +82,9 @@
 
                                     </fieldset>
                                     <footer style="margin-top: 20px;">
-                                        <input type="submit" name="btn-salvar" value="Cadastrar" id="btn-salvar" class="btn btn-primary" />
+                                        <button type="submit" name="btn-salvar" id="btn-salvar" class="btn btn-primary">
+                                            Cadastrar
+                                        </button>
 
                                         <button type="button" class="btn btn-default" onclick="window.location='/';">
                                             Cancelar

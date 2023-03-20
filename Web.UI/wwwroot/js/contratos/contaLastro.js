@@ -1,20 +1,31 @@
 const jsonPathContaLastro = '../../abis/ContaLastro.json?v=' + versaoJavascriptGlobal;
 
 async function consultarExtratoContaLastro() {
-    var contaLatro = await obterContrato(jsonPathContaLastro);
+    var contaLastro = await obterContrato(jsonPathContaLastro);
 
-    if (contaLatro == null)
+    if (contaLastro == null)
         return;
 
-    extrato = await contaLatro.methods.consultarExtrato().call();
+    extrato = await contaLastro.methods.consultarExtrato().call();
 
     return extrato;
 }
 
-async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
-    var contaLatro = await obterContrato(jsonPathContaLastro);
+async function consultarSaldoContaLastro() {
+    var contaLastro = await obterContrato(jsonPathContaLastro);
 
-    if (contaLatro == null) {
+    if (contaLastro == null)
+        return;
+
+    saldo = await contaLastro.methods.consultarSaldo().call();
+
+    return fromBlockChainDecimal(parseInt(saldo));
+}
+
+async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
+    var contaLastro = await obterContrato(jsonPathContaLastro);
+
+    if (contaLastro == null) {
         errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
     }
@@ -23,7 +34,7 @@ async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.realizarDeposito(valor).send({ from: conta })
+    contaLastro.methods.realizarDeposito(valor).send({ from: conta })
         .on('receipt', (receipt) => {
             if (receiptFunc != null)
                 receiptFunc(receipt);
@@ -36,9 +47,9 @@ async function realizarDepositoContaLastro(valor, receiptFunc, errorFunc) {
 }
 
 async function transferirTokenContaLastro(enderecoSecretaria, valor, receiptFunc, errorFunc) {
-    var contaLatro = await obterContrato(jsonPathContaLastro);
+    var contaLastro = await obterContrato(jsonPathContaLastro);
 
-    if (contaLatro == null) {
+    if (contaLastro == null) {
         errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
     }
@@ -47,7 +58,7 @@ async function transferirTokenContaLastro(enderecoSecretaria, valor, receiptFunc
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.transferirToken(enderecoSecretaria, valor).send({ from: conta })
+    contaLastro.methods.transferirToken(enderecoSecretaria, valor).send({ from: conta })
         .on('receipt', (receipt) => {
             if (receiptFunc != null)
                 receiptFunc(receipt);
@@ -60,16 +71,16 @@ async function transferirTokenContaLastro(enderecoSecretaria, valor, receiptFunc
 }
 
 async function setOwnerContaLastro(endereco, ehDono) {
-    var contaLatro = await obterContrato(jsonPathContaLastro);
+    var contaLastro = await obterContrato(jsonPathContaLastro);
 
-    if (contaLatro == null) {
+    if (contaLastro == null) {
         errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
         return;
     }
 
     var conta = await obterContaWeb3();
 
-    contaLatro.methods.setOwner(endereco, ehDono).send({ from: conta })
+    contaLastro.methods.setOwner(endereco, ehDono).send({ from: conta })
         .on('receipt', (receipt) => {
             alert('Dono setado.')
         })
@@ -80,12 +91,17 @@ async function setOwnerContaLastro(endereco, ehDono) {
 }
 
 async function bindEventoDepositoContaLastroRealizado(funcData, funcError) {
-    var contaLatro = await obterContrato(jsonPathContaLastro);
+    var contaLastro = await obterContrato(jsonPathContaLastro);
 
-    if (contaLatro == null)
+    if (contaLastro == null)
         return;
 
-    contaLatro.events.depositoRealizado()
+    contaLastro.events.depositoRealizado()
         .on('data', funcData)
         .on('error', funcError);
+}
+
+async function obterEnderecoContaLastro() {
+    var contaLastro = await obterContrato(jsonPathContaLastro);
+    return contaLastro.options.address;
 }

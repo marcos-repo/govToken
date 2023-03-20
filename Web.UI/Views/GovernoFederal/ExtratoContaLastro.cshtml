@@ -4,6 +4,7 @@
 
 @section scripts {
     <script src="~/js/contratos/contalastro.js?v@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/govToken.js?v@(JavascriptHelper.Versao)"></script>
     <script src="~/js/modulos/governofederal/extratoContaLastro.js?v=@(JavascriptHelper.Versao)"></script>
 }
 
@@ -34,6 +35,7 @@
                         <div class="widget-body no-padding">
                             <div class="smart-form table-responsive" style="padding: 15px; width: auto">
                                 <div>
+                                    <span id="spSaldo" style="font-weight: bold;"></span>
                                     <a href="../Depositar" class="btn btn-success btn-sm pull-right margin-bottom-10">
                                         <i class="fa fa-plus-circle"></i> Novo Depósito
                                     </a>

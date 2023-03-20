@@ -11,13 +11,15 @@ $(document).ready(function () {
 
     $("#ddlSecretaria").change(function () {
         carregarGridExtrato($(this).val());
+        carregarSaldo($(this).val());
     });
 
     carregarDropdownAgenteFederado();
 });
 
 async function carregarGridExtrato(endereco) {
-    
+    $("#tblExtrato tbody").html("");
+
     if (endereco == null || endereco == '')
         return;
 
@@ -28,6 +30,13 @@ async function carregarGridExtrato(endereco) {
 
     for (var i in extrato) {
         var tr = $("<tr class='data-item'>");
+
+        if (extrato[i].creditoDebito == "C") {
+            tr.attr("style", "color: green;");
+        }
+        else {
+            tr.attr("style", "color: red;");
+        }
 
         var valor = fromBlockChainDecimal(extrato[i].valor);
         var data = fromBlockChainDate(extrato[i].data);
@@ -43,7 +52,7 @@ async function carregarGridExtrato(endereco) {
 
 async function carregarDropdownAgenteFederado() {
     $("#ddlAgenteFederado option[data-consulta]").remove();
-    $("#ddlSecretaria option[data-consulta]").remove();    
+    $("#ddlSecretaria option[data-consulta]").remove();
 
     var agentesFederados = await listarAgentesFederados();
 
@@ -56,6 +65,7 @@ async function carregarDropdownAgenteFederado() {
 async function carregarDropdownSecretaria(enderecoAgenteFederado) {
     $("#ddlSecretaria option[data-consulta]").remove();
     carregarGridExtrato(null);
+    carregarSaldo(null);
 
     var secretarias = enderecoAgenteFederado != null && enderecoAgenteFederado != ""
         ? await listarSecretariasAgenteFederado(enderecoAgenteFederado)
@@ -76,4 +86,14 @@ async function resetarConsultarExtratoSecretaria() {
     $("#ddlSecretaria").val("");
     $("#tblExtrato tbody").html("");
     carregarDropdownAgenteFederado();
+    carregarSaldo(null);
+}
+
+async function carregarSaldo(endereco) {
+    if (endereco == null || endereco == '')
+        $("#spSaldo").html("");
+
+    var saldoGovToken = await obterSaldoGovToken(endereco);
+
+    $("#spSaldo").html("Saldo: GvT " + formatarDecimalMilhar(saldoGovToken, 2));
 }

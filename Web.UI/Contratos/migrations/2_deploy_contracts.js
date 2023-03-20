@@ -18,7 +18,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(PainelServico, AgenteFederado.address, Fornecedor.address, GovToken.address);
   painelServicoInstance = await PainelServico.deployed();
 
-  await deployer.deploy(ContaLastro, GovToken.address, AgenteFederado.address, PainelServico.address);
+  await deployer.deploy(ContaLastro, GovToken.address, AgenteFederado.address, PainelServico.address, Fornecedor.address);
   await ContaLastro.deployed();
 
   await govTokenInstance.setMintOwner(ContaLastro.address);

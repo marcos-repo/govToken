@@ -19,14 +19,18 @@ $(document).ready(function () {
         var enderecoCarteira = $("#enderecoCarteira").val();
         var descricao = $("#descricao").val();
 
+        adicionarLoadingBotao($("#btn-salvar"), true);
+
         cadastrarSecretaria(descricao, enderecoCarteira,
             () => {
                 $("#cadastrarSecretariaForm").trigger("reset");
                 mensagemSucesso($("#cadastrarSecretariaForm fieldset"), "Cadastro realizado.");
                 carregarAgenteFederado();
+                adicionarLoadingBotao($("#btn-salvar"), false);
             },
             (msgErro) => {
                 mensagemErro($("#cadastrarSecretariaForm fieldset"), msgErro);
+                adicionarLoadingBotao($("#btn-salvar"), false);
             }
         );
 

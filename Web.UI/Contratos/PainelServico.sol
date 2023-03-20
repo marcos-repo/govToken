@@ -78,7 +78,11 @@ contract PainelServico {
         view
         returns (ServicoInfo[] memory listaServicos)
     {
-        bool isFornecedor = _fornecedor.obterFornecedor(msg.sender).cadastrado;
+        FornecedorInfo memory fornecedor = _fornecedor.obterFornecedor(
+            msg.sender
+        );
+
+        bool isFornecedor = fornecedor.cadastrado && fornecedor.aprovado;
         bool isAgenteFederado = _agenteFederado
             .obterSecretaria(msg.sender)
             .cadastrado;
@@ -173,7 +177,10 @@ contract PainelServico {
             secretaria.enderecoCarteira,
             ExtratoInfo(
                 servico.data,
-                unicode"Reserva de Serviço",
+                string.concat(
+                    unicode"Reserva de Serviço - ",
+                    servico.descricaoResumida
+                ),
                 valor,
                 "D",
                 address(this),
@@ -263,9 +270,7 @@ contract PainelServico {
         return indice;
     }
 
-    function obterServico(
-        uint256 id
-    ) private view returns (ServicoInfo memory) {
+    function obterServico(uint256 id) public view returns (ServicoInfo memory) {
         return _listaServicos[obterIndiceServico(id)];
     }
 }

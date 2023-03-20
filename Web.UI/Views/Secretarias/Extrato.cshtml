@@ -4,6 +4,7 @@
 
 @section scripts {
     <script src="~/js/contratos/agenteFederado.js?v=@(JavascriptHelper.Versao)"></script>
+    <script src="~/js/contratos/govToken.js?v=@(JavascriptHelper.Versao)"></script>
     <script src="~/js/modulos/secretaria/extrato.js?v=@(JavascriptHelper.Versao)"></script>
 }
 
@@ -55,6 +56,7 @@
                             </div>
                             <div class="smart-form table-responsive" style="padding: 15px; width: auto">
                                 <div>
+                                    <span id="spSaldo" style="font-weight: bold;"></span>
                                     <table id="tblExtrato" class="table table-bordered table-striped" cellspacing="0" rules="all" border="1" style="border-collapse:collapse;">
                                         <thead>
                                             <tr class="header" style="height:5px !important;">

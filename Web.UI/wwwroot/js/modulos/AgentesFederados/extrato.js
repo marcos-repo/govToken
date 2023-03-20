@@ -23,6 +23,13 @@ async function carregarGridExtrato(endereco) {
     for (var i in extrato) {
         var tr = $("<tr class='data-item'>");
 
+        if (extrato[i].creditoDebito == "C") {
+            tr.attr("style", "color: green;");
+        }
+        else {
+            tr.attr("style", "color: red;");
+        }
+
         var valor = fromBlockChainDecimal(extrato[i].valor);
         var data = fromBlockChainDate(extrato[i].data);
         var simbolo = extrato[i].simboloToken;

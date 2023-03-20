@@ -23,3 +23,14 @@ async function aprovarTransferenciaGovToken(endereco, valor, receiptFunc, errorF
                 errorFunc(error.message);
         })
 }
+
+async function obterSaldoGovToken(endereco) {
+    var govToken = await obterContrato(jsonPathGovToken);
+
+    if (govToken == null) {
+        errorFunc(`Contrato não encontrado na rede '${await obterRede()}'.`);
+        return;
+    }
+
+    return fromBlockChainDecimal(parseInt(await govToken.methods.balanceOf(endereco).call()));
+}
