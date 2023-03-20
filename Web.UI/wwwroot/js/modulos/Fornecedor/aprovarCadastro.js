@@ -26,23 +26,28 @@ async function carregarFornecedoresSemAprovacao() {
 
     console.log('fornecedores -> ', fornecedores);
 
-    for (var i in fornecedores) {
-        var tr = $("<tr class='data-item'>");
+    if (fornecedores.length > 0) {
+        for (var i in fornecedores) {
+            var tr = $("<tr class='data-item'>");
 
-        var nome = fornecedores[i].nome;
-        var data = fromBlockChainDate(fornecedores[i].dataCadastro);
-        var carteira = fornecedores[i].enderecoCarteira;
-        
-        tr.append($("<td class='text-center v-middle'>").text(nome));
-        tr.append($("<td class='text-center v-middle'>").text(formatarDataHoraPadraoPtBR(data)));
+            var nome = fornecedores[i].nome;
+            var data = fromBlockChainDate(fornecedores[i].dataCadastro);
+            var carteira = fornecedores[i].enderecoCarteira;
 
-        tr.append($("<td class='text-center v-middle'>")
-            .html("<button class='btn btn-success btn-sm' data-address='" + carteira + "' href='#'><i class='fa fa-check'></i> Aprovar</button>"));
+            tr.append($("<td class='text-center v-middle'>").text(nome));
+            tr.append($("<td class='text-center v-middle'>").text(formatarDataHoraPadraoPtBR(data)));
 
-        $("#mytable tbody").append(tr);
+            tr.append($("<td class='text-center v-middle'>")
+                .html("<button class='btn btn-success btn-sm' data-address='" + carteira + "' href='#'><i class='fa fa-check'></i> Aprovar</button>"));
+
+            $("#mytable tbody").append(tr);
+        }
+
+        bindEventos();
     }
-
-    bindEventos();
+    else {
+        $("#mytable tbody").html(zeroItemGrid);
+    }    
 }
 
 function bindEventos() {
